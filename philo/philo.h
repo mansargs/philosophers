@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/28 16:22:56 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:55:09 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ typedef struct	philo
 	pthread_t		tid;
 }					t_philo;
 
-
 typedef struct		info
 {
 	unsigned int	philos_num;
@@ -36,7 +35,7 @@ typedef struct		info
 	unsigned int	time_sleep;
 	int				eat_limit;
 	t_philo			*philos;
-	pthread_mutex_t *forks;
+	pthread_mutex_t	*forks;
 }					t_info;
 
 
@@ -45,11 +44,16 @@ typedef struct		info
 # define SLEEPING "is sleeping"
 # define THINKING "is thinking"
 # define DIED "died"
-# define INVALID_ARGC "\033[31mYou need to run the program like this\n./philo number_of_philosopher time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]\033[0m\n"
+# define INVALID_ARGC "\033[31mUsage: ./philo <num> <die> <eat> <sleep> [must_eat]\033[0m\n"
 
 
 int		ft_atoi(const char *str);
 bool	valid_number(const char *str);
 bool	valid_arguments(int argc, char **argv);
+void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int index);
+bool	allocation_philos(t_info *data);
+bool	allocation_mutexes(t_info *data);
+bool	init_simulation_info(const int argc, const char **argv, t_info *data);
+void	*thread_handler(void *arg);
 
 #endif
