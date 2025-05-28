@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/28 15:12:20 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/05/28 16:22:56 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct		info
 	unsigned int	time_sleep;
 	int				eat_limit;
 	t_philo			*philos;
+	pthread_mutex_t *forks;
 }					t_info;
 
 

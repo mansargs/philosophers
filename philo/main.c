@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/28 15:23:41 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/05/28 16:31:04 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	*thread_handler(void *arg)
 static bool	complete_info(const int argc, const char **argv, t_info *data)
 {
 	unsigned int	i;
+	unsigned int	j;
 
 	if (argc == 5)
 		data->eat_limit = -1;
@@ -50,6 +51,24 @@ static bool	complete_info(const int argc, const char **argv, t_info *data)
 		}
 		++i;
 	}
+	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->philos_num);
+	if (!data->forks)
+	{
+		printf("\033[31mProblem with the allocation memory\033[0m\n");
+		return (false);
+	}
+	i = 0;
+	while (i < data->philos_num)
+	{
+		if (pthread_mutex_init(data->forks + i, NULL) != 0)
+		{
+			j = 0;
+			while (++i )
+		}
+
+
+	}
+
 	return (true);
 }
 
