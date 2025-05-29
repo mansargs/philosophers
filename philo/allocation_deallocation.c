@@ -6,18 +6,18 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/28 17:57:41 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:50:47 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int index)
+void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int init_count)
 {
 	unsigned int	j;
 
 	j = 0;
-	while (j < index)
+	while (j < init_count)
 	{
 		pthread_mutex_destroy(forks + j);
 		++j;
@@ -39,6 +39,11 @@ bool	allocation_philos(t_info *data)
 	while (i < data->philos_num)
 	{
 		data->philos[i].index = i + 1;
+		data->philos[i].right = data->forks + i;
+		if (i + 1 == data->philos_num)
+			data->philos[i].left = data->forks;
+		else
+			data->philos[i].left = data->forks + i + 1;
 		if (pthread_create(&data->philos[i].tid, NULL, thread_handler, &data->philos[i]))
 		{
 			printf("\033[31mError creating thread %d\033[0m\n", i + 1);
@@ -86,13 +91,10 @@ bool	init_simulation_info(const int argc, const char **argv, t_info *data)
 	data->time_die = ft_atoi(argv[2]);
 	data->time_eat = ft_atoi(argv[3]);
 	data->time_sleep = ft_atoi(argv[4]);
+	if (!allocation_mutexes(data))
+		return (false);
 	if (!allocation_philos(data))
 		return (false);
-	if (!allocation_mutexes(data))
-	{
-		free(data->philos);
-		return (false);
-	}
 	return (true);
 }
 

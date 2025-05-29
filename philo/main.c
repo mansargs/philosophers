@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/28 17:48:35 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:54:31 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 
 void	*thread_handler(void *arg)
 {
-	t_info	*data = (t_info *)arg;
-	pthread_mutex_lock(data->forks + data->philos)
+	t_philo	*philo;
+
+	philo = (t_philo *) arg;
+	
 	return (NULL);
 }
 
@@ -37,7 +39,6 @@ int	main(int argc, char **argv)
 		pthread_join(data.philos[i].tid, NULL);
 		++i;
 	}
-
 	free(data.philos);
 	return (EXIT_SUCCESS);
 }

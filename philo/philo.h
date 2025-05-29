@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/28 17:55:09 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:39:02 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ typedef struct	philo
 {
 	unsigned int	index;
 	pthread_t		tid;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
 }					t_philo;
 
 typedef struct		info
