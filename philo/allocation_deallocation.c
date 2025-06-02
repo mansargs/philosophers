@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/29 15:50:47 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/02 20:10:54 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int init_count)
 bool	allocation_philos(t_info *data)
 {
 	unsigned int	i;
+	int				s;
 
 	data->philos = malloc(sizeof(t_philo) * data->philos_num);
 	if (!data->philos)
@@ -44,6 +45,11 @@ bool	allocation_philos(t_info *data)
 			data->philos[i].left = data->forks;
 		else
 			data->philos[i].left = data->forks + i + 1;
+		data->philos[i].data = data;
+		if (i % 2 == 0)
+			data->philos[i].odd_index = true;
+		else
+			data->philos[i].odd_index = false;
 		if (pthread_create(&data->philos[i].tid, NULL, thread_handler, &data->philos[i]))
 		{
 			printf("\033[31mError creating thread %d\033[0m\n", i + 1);
@@ -69,7 +75,7 @@ bool	allocation_mutexes(t_info *data)
 	{
 		if (pthread_mutex_init(data->forks + i, NULL) != 0)
 		{
-			destroy_mutexes(data->forks, i);
+			deallocation_mutexes(data->forks, i);
 			printf("\033[31mError initializing thread %d\033[0m\n", i + 1);
 			return (false);
 		}

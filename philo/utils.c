@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:22:01 by mansargs          #+#    #+#             */
-/*   Updated: 2025/05/29 14:24:43 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/02 19:31:40 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,16 @@ bool	valid_number(const char *str)
 {
 	int	i;
 
-	i = -1;
+	i = 0;
 	if (str[0] == '+')
 		++i;
 	if (!str[i])
 		return (false);
-	while (str[++i])
+	while (str[i])
 	{
 		if (str[i] < '0' || str[i] > '9')
 			return (false);
+		++i;
 	}
 	return (true);
 }
