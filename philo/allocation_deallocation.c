@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/02 20:10:54 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/02 21:30:25 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,6 @@ bool	allocation_philos(t_info *data)
 		else
 			data->philos[i].left = data->forks + i + 1;
 		data->philos[i].data = data;
-		if (i % 2 == 0)
-			data->philos[i].odd_index = true;
-		else
-			data->philos[i].odd_index = false;
 		if (pthread_create(&data->philos[i].tid, NULL, thread_handler, &data->philos[i]))
 		{
 			printf("\033[31mError creating thread %d\033[0m\n", i + 1);

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/02 20:17:59 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/02 21:30:05 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,19 +37,27 @@ typedef struct info
 struct philo
 {
 	unsigned int	index;
-	bool			odd_index;
 	pthread_t		tid;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
 	t_info			*data;
 };
 
-# define TAKE_FORK "%d has taken a fork\n"
-# define EATING "%d is eating\n"
-# define SLEEPING "%d is sleeping\n"
-# define THINKING "%d is thinking\n"
-# define DIED "%d died\n"
-# define INVALID_ARGC "\033[31mUsage: ./philo <num> <die> <eat> <sleep> [must_eat]\033[0m\n"
+# define RED     "\033[0;31m"
+# define GREEN   "\033[0;32m"
+# define YELLOW  "\033[0;33m"
+# define BLUE    "\033[0;34m"
+# define MAGENTA "\033[0;35m"
+# define CYAN    "\033[0;36m"
+# define RESET   "\033[0m"
+
+# define TAKE_FORK CYAN "%d has taken a fork\n" RESET
+# define EATING    GREEN "%d is eating\n" RESET
+# define SLEEPING  BLUE "%d is sleeping\n" RESET
+# define THINKING  MAGENTA "%d is thinking\n" RESET
+# define DIED      RED "%d died\n" RESET
+# define INVALID_ARGC RED "Usage: ./philo <num> <die> <eat> <sleep> [must_eat]\n" RESET
+
 
 
 int		ft_atoi(const char *str);

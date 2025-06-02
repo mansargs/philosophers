@@ -6,22 +6,11 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/02 20:18:54 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/02 21:36:25 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-
-static void	swap_forks(t_philo *philo)
-{
-	pthread_mutex_t	*temp;
-
-	temp = philo->left;
-	philo->left =philo->right;
-	philo->right = temp;
-}
-
 
 void	*thread_handler(void *arg)
 {
@@ -30,19 +19,27 @@ void	*thread_handler(void *arg)
 	philo = (t_philo *) arg;
 	while (1)
 	{
-		if (!philo->odd_index)
-			swap_forks(philo);
-		pthread_mutex_lock(philo->right);
-		printf(TAKE_FORK, philo->index);
-		pthread_mutex_lock(philo->left);
-		printf(TAKE_FORK, philo->index);
+		if (philo->index % 2 == 1)
+		{
+			pthread_mutex_lock(philo->right);
+			printf(TAKE_FORK, philo->index);
+			pthread_mutex_lock(philo->left);
+			printf(TAKE_FORK, philo->index);
+		}
+		else
+		{
+			pthread_mutex_lock(philo->left);
+			printf(TAKE_FORK, philo->index);
+			pthread_mutex_lock(philo->right);
+			printf(TAKE_FORK, philo->index);
+		}
 		printf(EATING, philo->index);
 		usleep(philo->data->time_eat);
 		pthread_mutex_unlock(philo->left);
 		pthread_mutex_unlock(philo->right);
 		printf(SLEEPING, philo->index);
 		usleep(philo->data->time_sleep);
-		printf(THINKING, philo->);
+		printf(THINKING, philo->index);
 	}
 	return (NULL);
 }
