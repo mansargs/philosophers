@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/02 21:30:25 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/03 01:36:41 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,27 @@
 
 void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int init_count)
 {
-	unsigned int	j;
+	int	j;
 
-	j = 0;
-	while (j < init_count)
-	{
+	j = -1;
+	while (++j < init_count)
 		pthread_mutex_destroy(forks + j);
-		++j;
-	}
 	free(forks);
 }
 
 bool	allocation_philos(t_info *data)
 {
-	unsigned int	i;
-	int				s;
+	int	i;
+	int	s;
 
-	data->philos = malloc(sizeof(t_philo) * data->philos_num);
+	data->philos = malloc(sizeof(t_philo) * (data->philos_num + 2));
 	if (!data->philos)
 	{
 		printf("\033[31mProblem with the allocation memory\033[0m\n");
 		return (false);
 	}
-	i = 0;
-	while (i < data->philos_num)
+	i = -1;
+	while (++i < data->philos_num)
 	{
 		data->philos[i].index = i + 1;
 		data->philos[i].right = data->forks + i;
@@ -46,19 +43,28 @@ bool	allocation_philos(t_info *data)
 		else
 			data->philos[i].left = data->forks + i + 1;
 		data->philos[i].data = data;
+		if (data->philos_num == 1)
+			break ;
 		if (pthread_create(&data->philos[i].tid, NULL, thread_handler, &data->philos[i]))
 		{
 			printf("\033[31mError creating thread %d\033[0m\n", i + 1);
 			return (false);
 		}
-		++i;
+	}
+	if (data->philos_num == 1)
+	{
+		if (pthread_create(&data->philos[i].tid, NULL, one_philo, &data->philos[i]))
+		{
+			printf("\033[31mError creating thread %d\033[0m\n", i + 1);
+			return (false);
+		}
 	}
 	return (true);
 }
 
 bool	allocation_mutexes(t_info *data)
 {
-	unsigned int i;
+	int	i;
 
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * data->philos_num);
 	if (!data->forks)
@@ -66,8 +72,8 @@ bool	allocation_mutexes(t_info *data)
 		printf("\033[31mProblem with the allocation memory\033[0m\n");
 		return (false);
 	}
-	i = 0;
-	while (i < data->philos_num)
+	i = -1;
+	while (++i < data->philos_num)
 	{
 		if (pthread_mutex_init(data->forks + i, NULL) != 0)
 		{
@@ -75,16 +81,12 @@ bool	allocation_mutexes(t_info *data)
 			printf("\033[31mError initializing thread %d\033[0m\n", i + 1);
 			return (false);
 		}
-		++i;
 	}
 	return (true);
 }
 
-bool	init_simulation_info(const int argc, const char **argv, t_info *data)
+bool	init_simulation_info(const int argc, char **argv, t_info *data)
 {
-	unsigned int	i;
-	unsigned int	j;
-
 	if (argc == 5)
 		data->eat_limit = -1;
 	else
@@ -97,6 +99,7 @@ bool	init_simulation_info(const int argc, const char **argv, t_info *data)
 		return (false);
 	if (!allocation_philos(data))
 		return (false);
+	data->simulation_start = get_time_ms();
 	return (true);
 }
 
