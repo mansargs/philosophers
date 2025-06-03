@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/03 01:35:26 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/03 15:53:06 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ typedef struct info
 	int				time_eat;
 	int				time_sleep;
 	int				eat_limit;
-	int				simulation_start;
-	t_philo			*philos;
+	bool			stop;
+	pthread_mutex_t	save_stoping;
+	pthread_mutex_t	save_printing;
+	t_philo			*threads;
 	pthread_mutex_t	*forks;
 } t_info;
 
@@ -39,6 +41,7 @@ struct philo
 {
 	int				index;
 	int				counter;
+	long			simulation_start;
 	pthread_t		tid;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
@@ -59,15 +62,16 @@ struct philo
 # define THINKING  MAGENTA "[%ld] %d is thinking\n" RESET
 # define DIED      RED "[%ld] %d died\n" RESET
 # define INVALID_ARGC RED "Usage: ./philo <num> <die> <eat> <sleep> [must_eat]\n" RESET
-
+# define SUCCESS_FINISH GREEN "Simulation ended: all philosophers have eaten required times.\n" RESET
 
 long	get_time_ms(void);
 void	*one_philo(void *arg);
 int		ft_atoi(const char *str);
+void	*monitor_handler(void	*arg);
 bool	valid_number(const char *str);
 bool	valid_arguments(int argc, char **argv);
 void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int index);
-bool	allocation_philos(t_info *data);
+bool	allocation_philos_monitor(t_info *data);
 bool	allocation_mutexes(t_info *data);
 bool	init_simulation_info(const int argc, char **argv, t_info *data);
 void	*thread_handler(void *arg);
