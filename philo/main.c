@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/03 16:14:30 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/03 16:33:45 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,14 @@ long	get_time_ms(void)
 
 	gettimeofday(&tv, NULL);
 	 return (tv.tv_sec * 1000L + tv.tv_usec / 1000L);
+}
+
+bool	safe_print(t_info *data)
+{
+	if (!data->stop)
+	{
+
+	}
 }
 
 void	*thread_handler(void *arg)
@@ -72,34 +80,40 @@ void	*monitor_handler(void	*arg)
 	bool	all;
 
 	data = (t_info *) arg;
-	if (data->eat_limit != -1)
+	while (!data->stop)
 	{
+		if (data->eat_limit != -1)
+		{
+			i = -1;
+			all = true;
+			while (++i < data->philos_num)
+			{
+				if (data->threads[i].counter != data->eat_limit)
+				{
+					all = false;
+					break ;
+				}
+			}
+			if (all)
+			{
+				printf(SUCCESS_FINISH);
+				pthread_mutex_lock(&data->save_stoping);
+				data->stop = true;
+				pthread_mutex_unlock(&data->save_stoping);
+				return (NULL);
+			}
+		}
 		i = -1;
 		while (++i < data->philos_num)
 		{
-			printf("%d counter is %d",data->threads[i].index, data->threads[i].counter);
-			if (data->threads[i].counter != data->eat_limit)
+			if (get_time_ms() - data->threads[i].simulation_start >= data->time_die)
 			{
-				all = false;
-				break ;
+				printf(DIED, get_time_ms(), data->threads[i].index);
+				pthread_mutex_lock(&data->save_stoping);
+				data->stop = true;
+				pthread_mutex_unlock(&data->save_stoping);
+				return (NULL);
 			}
-			all = true;
-		}
-		if (all)
-		{
-			printf(SUCCESS_FINISH);
-			data->stop = true;
-			return (NULL);
-		}
-	}
-	i = -1;
-	while (++i < data->philos_num)
-	{
-		if (get_time_ms() - data->threads[i].simulation_start >= data->time_die)
-		{
-			printf(DIED, get_time_ms(), data->threads[i].index);
-			data->stop = true;
-			return (NULL);
 		}
 	}
 	return (NULL);
@@ -118,8 +132,7 @@ int	main(int argc, char **argv)
 	if (!init_simulation_info(argc, argv, &data))
 		return (EXIT_FAILURE);
 	i = -1;
-	int total_threads = data.philos_num + (data.philos_num > 1);
-	while (i < total_threads)
+	while (i <= data.philos_num)
 		pthread_join(data.threads[i].tid, NULL);
 	free(data.threads);
 	return (EXIT_SUCCESS);
