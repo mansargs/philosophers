@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/03 15:53:06 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/04 01:42:16 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ struct philo
 {
 	int				index;
 	int				counter;
-	long			simulation_start;
+	long			last_eat;
 	pthread_t		tid;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
@@ -68,6 +68,7 @@ long	get_time_ms(void);
 void	*one_philo(void *arg);
 int		ft_atoi(const char *str);
 void	*monitor_handler(void	*arg);
+void	safe_print(t_info *data, const char *str, const int index);
 bool	valid_number(const char *str);
 bool	valid_arguments(int argc, char **argv);
 void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int index);

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/03 16:00:17 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/04 02:08:32 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ bool	allocation_philos_monitor(t_info *data)
 		data->threads[i].counter = 0;
 		data->threads[i].index = i + 1;
 		data->threads[i].right = data->forks + i;
-		data->threads[i].simulation_start = get_time_ms();
+		data->threads[i].last_eat = get_time_ms();
 		if (i + 1 == data->philos_num)
 			data->threads[i].left = data->forks;
 		else
@@ -84,6 +84,11 @@ bool	allocation_mutexes(t_info *data)
 		printf("\033[31mError initializing thread %d\033[0m\n", i + 1);
 		return (false);
 	}
+	if (pthread_mutex_init(&data->save_printing, NULL))
+	{
+		printf("\033[31mError initializing thread %d\033[0m\n", i + 1);
+		return (false);
+	}
 	i = -1;
 	while (++i < data->philos_num)
 	{
@@ -91,6 +96,7 @@ bool	allocation_mutexes(t_info *data)
 		{
 			deallocation_mutexes(data->forks, i);
 			pthread_mutex_destroy(&data->save_stoping);
+			pthread_mutex_destroy(&data->save_printing);
 			printf("\033[31mError initializing thread %d\033[0m\n", i + 1);
 			return (false);
 		}
