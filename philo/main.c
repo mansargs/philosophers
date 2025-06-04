@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:55:51 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 16:05:28 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:43:54 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	main(int argc, char **argv)
 {
 	t_info	data;
 	int		i;
-	if ((argc != 5 && argc != 6) || !valid_arguments(argc, (const char **) argv))
+	if (argc < 5 || argc > 6 || !valid_arguments(argc, (const char **) argv))
 	{
 		printf(INVALID_ARGC);
 		return (EINVAL);

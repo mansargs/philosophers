@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 16:13:00 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/04 17:06:38 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,10 @@
 static void	private_philo(t_info	*data, int index)
 {
 	data->threads[index].counter = 0;
+	data->threads[index].last_eat = get_time_ms ();
 	data->threads[index].index = index + 1;
 	data->threads[index].right = data->forks + index;
-	data->threads[index].left = data->forks + (index % data->philos_num);
+	data->threads[index].left = data->forks + ((index + 1) % data->philos_num);
 	data->threads[index].last_eat = get_time_ms();
 	data->threads[index].data = data;
 }
@@ -81,7 +82,7 @@ static bool convert_argc(const int argc, const char **argv, t_info *data)
 		data->must_eat = -1;
 	else
 		data->must_eat = ft_atol(argv[5]);
-	if (data->must_eat <= 0 || data->must_eat > INT_MAX)
+	if (data->must_eat != -1  && (data->must_eat <= 0 || data->must_eat > INT_MAX))
 		return (false);
 	data->philos_num = ft_atol(argv[1]);
 	if (data->philos_num <= 0 || data->philos_num > INT_MAX)
@@ -101,7 +102,7 @@ static bool convert_argc(const int argc, const char **argv, t_info *data)
 bool	init_simulation_info(const int argc, const char **argv, t_info *data)
 {
 	if (!convert_argc(argc, argv, data))
-		return (printf(INVALID_ARGC), false);
+		return (printf("Invalid arguments\n"), false);
 	if (!allocation_mutexes(data))
 		return (false);
 	if (!allocation_philos_monitor(data))

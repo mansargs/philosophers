@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 16:40:30 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/04 17:08:20 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,9 @@ void safe_print(t_info *data, const char *str, const int index)
 		pthread_mutex_unlock(&data->stop_mutex);
 		return;
 	}
-	pthread_mutex_lock(&data->print_mutex);
 	pthread_mutex_unlock(&data->stop_mutex);
-
+	pthread_mutex_lock(&data->print_mutex);
 	printf(str, get_time_ms() - data->start_time, index);
-
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
@@ -79,9 +77,7 @@ void	*one_philo(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
-	printf(TAKE_FORK, get_time_ms(), philo->index);
-	usleep(philo->data->time_die + 10);
-	printf(DIED, get_time_ms(), philo->index);
+	printf(TAKE_FORK, get_time_ms() - philo->data->start_time, philo->index);
 	return (NULL);
 }
 
@@ -128,7 +124,7 @@ void	*monitor_handler(void	*arg)
 		i = -1;
 		while (++i < data->philos_num)
 		{
-			if (get_time_ms() - data->threads[i].last_eat >= data->time_die + data->time_sleep)
+			if (get_time_ms() - data->threads[i].last_eat >= data->time_die)
 			{
 				safe_print(data, DIED, data->threads[i].index);
 				pthread_mutex_lock(&data->stop_mutex);
@@ -137,6 +133,7 @@ void	*monitor_handler(void	*arg)
 				return (NULL);
 			}
 		}
+		usleep(1000);
 	}
 	return (NULL);
 }
