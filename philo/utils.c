@@ -6,16 +6,24 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:22:01 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/03 01:30:14 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/04 15:44:13 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int	ft_atoi(const char *str)
+long	get_time_ms(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000L + tv.tv_usec / 1000L);
+}
+
+long	ft_atol(const char *str)
 {
 	size_t	i;
-	int		num;
+	long	num;
 	int		sign;
 
 	sign = 1;
@@ -53,7 +61,7 @@ bool	valid_number(const char *str)
 	return (true);
 }
 
-bool	valid_arguments(int argc, char **argv)
+bool	valid_arguments(int argc, const char **argv)
 {
 	int	i;
 

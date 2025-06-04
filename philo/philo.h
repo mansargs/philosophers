@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 01:42:16 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:41:05 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+# include <string.h>
+# include <limits.h>
 # include <errno.h>
 # include <stdbool.h>
 
@@ -25,14 +27,15 @@ typedef struct philo t_philo;
 
 typedef struct info
 {
-	int				philos_num;
-	int				time_die;
-	int				time_eat;
-	int				time_sleep;
-	int				eat_limit;
+	long			philos_num;
+	long			time_die;
+	long			time_eat;
+	long			time_sleep;
+	long			must_eat;
+	long			start_time;
 	bool			stop;
-	pthread_mutex_t	save_stoping;
-	pthread_mutex_t	save_printing;
+	pthread_mutex_t	stop_mutex;
+	pthread_mutex_t	print_mutex;
 	t_philo			*threads;
 	pthread_mutex_t	*forks;
 } t_info;
@@ -41,7 +44,7 @@ struct philo
 {
 	int				index;
 	int				counter;
-	long			last_eat;
+	long		last_eat;
 	pthread_t		tid;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
@@ -64,17 +67,22 @@ struct philo
 # define INVALID_ARGC RED "Usage: ./philo <num> <die> <eat> <sleep> [must_eat]\n" RESET
 # define SUCCESS_FINISH GREEN "Simulation ended: all philosophers have eaten required times.\n" RESET
 
+void	cleanup_data(t_info *data);
+void	deallocation_mutexes(t_info *data, int init_count);
+
 long	get_time_ms(void);
-void	*one_philo(void *arg);
-int		ft_atoi(const char *str);
-void	*monitor_handler(void	*arg);
-void	safe_print(t_info *data, const char *str, const int index);
-bool	valid_number(const char *str);
-bool	valid_arguments(int argc, char **argv);
-void	deallocation_mutexes(pthread_mutex_t *forks, unsigned int index);
+
 bool	allocation_philos_monitor(t_info *data);
 bool	allocation_mutexes(t_info *data);
-bool	init_simulation_info(const int argc, char **argv, t_info *data);
+bool	init_simulation_info(const int argc, const char **argv, t_info *data);
+
+long	ft_atol(const char *str);
+bool	valid_number(const char *str);
+bool	valid_arguments(const int argc, const char **argv);
+
+void	*one_philo(void *arg);
+void	*monitor_handler(void	*arg);
+void	safe_print(t_info *data, const char *str, const int index);
 void	*thread_handler(void *arg);
 
 #endif
