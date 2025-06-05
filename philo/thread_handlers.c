@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 17:08:20 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:22:22 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,47 +28,53 @@ void safe_print(t_info *data, const char *str, const int index)
 
 void *thread_handler(void *arg)
 {
-	t_philo *philo = (t_philo *)arg;
+    t_philo *philo = (t_philo *)arg;
 
-	while (1)
-	{
-		pthread_mutex_lock(&philo->data->stop_mutex);
-		if (philo->data->stop)
-		{
-			pthread_mutex_unlock(&philo->data->stop_mutex);
-			break ;
-		}
-		pthread_mutex_unlock(&philo->data->stop_mutex);
+    while (1)
+    {
+        pthread_mutex_lock(&philo->data->stop_mutex);
+        if (philo->data->stop)
+        {
+            pthread_mutex_unlock(&philo->data->stop_mutex);
+            break;
+        }
+        pthread_mutex_unlock(&philo->data->stop_mutex);
 
-		if (philo->index % 2 == 1)
-		{
-			pthread_mutex_lock(philo->right);
-			safe_print(philo->data, TAKE_FORK, philo->index);
-			pthread_mutex_lock(philo->left);
-			safe_print(philo->data, TAKE_FORK, philo->index);
-		}
-		else
-		{
-			pthread_mutex_lock(philo->left);
-			safe_print(philo->data, TAKE_FORK, philo->index);
-			pthread_mutex_lock(philo->right);
-			safe_print(philo->data, TAKE_FORK, philo->index);
-		}
+        // Take forks
+        if (philo->index % 2 == 1)
+            usleep(1000); // Small delay for odd philosophers
+        pthread_mutex_lock(philo->right);
+        safe_print(philo->data, TAKE_FORK, philo->index);
+        pthread_mutex_lock(philo->left);
+        safe_print(philo->data, TAKE_FORK, philo->index);
 
-		safe_print(philo->data, EATING, philo->index);
-		++philo->counter;
-		usleep(philo->data->time_eat);
-		philo->last_eat = get_time_ms();
+        // Eat
+        safe_print(philo->data, EATING, philo->index);
+        philo->last_eat = get_time_ms();
+        usleep(philo->data->time_eat * 1000);
+        philo->counter++;
 
-		pthread_mutex_unlock(philo->left);
-		pthread_mutex_unlock(philo->right);
+        // Release forks
+        pthread_mutex_unlock(philo->left);
+        pthread_mutex_unlock(philo->right);
 
-		safe_print(philo->data, SLEEPING, philo->index);
-		usleep(philo->data->time_sleep);
+        // Check if simulation should stop after each action
+        pthread_mutex_lock(&philo->data->stop_mutex);
+        if (philo->data->stop)
+        {
+            pthread_mutex_unlock(&philo->data->stop_mutex);
+            break;
+        }
+        pthread_mutex_unlock(&philo->data->stop_mutex);
 
-		safe_print(philo->data, THINKING, philo->index);
-	}
-	return (NULL);
+        // Sleep
+        safe_print(philo->data, SLEEPING, philo->index);
+        usleep(philo->data->time_sleep * 1000);
+
+        // Think
+        safe_print(philo->data, THINKING, philo->index);
+    }
+    return (NULL);
 }
 
 

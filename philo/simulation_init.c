@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 17:06:38 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/05 14:24:38 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static void	private_philo(t_info	*data, int index)
 {
 	data->threads[index].counter = 0;
-	data->threads[index].last_eat = get_time_ms ();
+	data->threads[index].last_eat = data->start_time;
 	data->threads[index].index = index + 1;
 	data->threads[index].right = data->forks + index;
 	data->threads[index].left = data->forks + ((index + 1) % data->philos_num);
