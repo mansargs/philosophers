@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/05 14:22:22 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/06 02:40:02 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void safe_print(t_info *data, const char *str, const int index)
 	}
 	pthread_mutex_unlock(&data->stop_mutex);
 	pthread_mutex_lock(&data->print_mutex);
-	printf(str, get_time_ms() - data->start_time, index);
+	printf("[%ld] %d %s\n", get_time_ms() - data->start_time, index, str);
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
@@ -83,7 +83,7 @@ void	*one_philo(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
-	printf(TAKE_FORK, get_time_ms() - philo->data->start_time, philo->index);
+	printf("[%ld] %d %s\n", get_time_ms() - philo->data->start_time, philo->index, TAKE_FORK);
 	return (NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 16:41:05 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/06 02:37:24 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,12 @@ struct philo
 {
 	int				index;
 	int				counter;
-	long		last_eat;
+	long			last_eat;
 	pthread_t		tid;
 	pthread_mutex_t	*left;
 	pthread_mutex_t	*right;
+	pthread_mutex_t	counter_mutex;
+	pthread_mutex_t	last_eat_mutex;
 	t_info			*data;
 };
 
@@ -57,13 +59,13 @@ struct philo
 # define BLUE    "\033[0;34m"
 # define MAGENTA "\033[0;35m"
 # define CYAN    "\033[0;36m"
-# define RESET   "\033[0m"
+# define RESET   "\033[0m "
 
-# define TAKE_FORK CYAN "[%ld] %d has taken a fork\n" RESET
-# define EATING    GREEN "[%ld] %d is eating\n" RESET
-# define SLEEPING  BLUE "[%ld] %d is sleeping\n" RESET
-# define THINKING  MAGENTA "[%ld] %d is thinking\n" RESET
-# define DIED      RED "[%ld] %d died\n" RESET
+# define TAKE_FORK CYAN "has taken a fork" RESET
+# define EATING    GREEN "is eating" RESET
+# define SLEEPING  BLUE "is sleeping" RESET
+# define THINKING  MAGENTA "is thinking" RESET
+# define DIED      RED "died" RESET
 # define INVALID_ARGC RED "Usage: ./philo <num> <die> <eat> <sleep> [must_eat]\n" RESET
 # define SUCCESS_FINISH GREEN "Simulation ended: all philosophers have eaten required times.\n" RESET
 
