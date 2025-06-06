@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/06 02:40:02 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/06 15:46:33 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,121 +26,80 @@ void safe_print(t_info *data, const char *str, const int index)
 	pthread_mutex_unlock(&data->print_mutex);
 }
 
-void *thread_handler(void *arg)
-{
-    t_philo *philo = (t_philo *)arg;
-
-    while (1)
-    {
-        pthread_mutex_lock(&philo->data->stop_mutex);
-        if (philo->data->stop)
-        {
-            pthread_mutex_unlock(&philo->data->stop_mutex);
-            break;
-        }
-        pthread_mutex_unlock(&philo->data->stop_mutex);
-
-        // Take forks
-        if (philo->index % 2 == 1)
-            usleep(1000); // Small delay for odd philosophers
-        pthread_mutex_lock(philo->right);
-        safe_print(philo->data, TAKE_FORK, philo->index);
-        pthread_mutex_lock(philo->left);
-        safe_print(philo->data, TAKE_FORK, philo->index);
-
-        // Eat
-        safe_print(philo->data, EATING, philo->index);
-        philo->last_eat = get_time_ms();
-        usleep(philo->data->time_eat * 1000);
-        philo->counter++;
-
-        // Release forks
-        pthread_mutex_unlock(philo->left);
-        pthread_mutex_unlock(philo->right);
-
-        // Check if simulation should stop after each action
-        pthread_mutex_lock(&philo->data->stop_mutex);
-        if (philo->data->stop)
-        {
-            pthread_mutex_unlock(&philo->data->stop_mutex);
-            break;
-        }
-        pthread_mutex_unlock(&philo->data->stop_mutex);
-
-        // Sleep
-        safe_print(philo->data, SLEEPING, philo->index);
-        usleep(philo->data->time_sleep * 1000);
-
-        // Think
-        safe_print(philo->data, THINKING, philo->index);
-    }
-    return (NULL);
-}
-
-
 void	*one_philo(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
 	printf("[%ld] %d %s\n", get_time_ms() - philo->data->start_time, philo->index, TAKE_FORK);
+	usleep(philo->data->time_die * 1000);
+	printf("[%ld] %d %s\n", get_time_ms() - philo->data->start_time, philo->index, DIED);
 	return (NULL);
 }
 
-
-void	*monitor_handler(void	*arg)
+static void	ready_for_eating(t_philo *philo)
 {
-	t_info	*data;
-	int		i;
-	bool	all;
+	if (philo->index % 2)
+	{
+		pthread_mutex_lock(philo->right);
+		safe_print(philo->data, TAKE_FORK, philo->index);
+		pthread_mutex_lock(philo->left);
+		safe_print(philo->data, TAKE_FORK, philo->index);
+	}
+	else
+	{
+		pthread_mutex_lock(philo->left);
+		safe_print(philo->data, TAKE_FORK, philo->index);
+		pthread_mutex_lock(philo->right);
+		safe_print(philo->data, TAKE_FORK, philo->index);
+	}
+}
 
-	data = (t_info *) arg;
+static void	eat(t_philo *philo)
+{
+	safe_print(philo->data, EATING, philo->index);
+	pthread_mutex_lock(&philo->last_eat_mutex);
+	philo->last_eat = get_time_ms();
+	pthread_mutex_unlock(&philo->last_eat_mutex);
+	pthread_mutex_lock(&philo->counter_mutex);
+	++philo->counter;
+	pthread_mutex_unlock(&philo->counter_mutex);
+	usleep(philo->data->time_eat * 1000);
+}
+
+void	*thread_handler(void	*arg)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *) arg;
 	while (1)
 	{
-		pthread_mutex_lock(&data->stop_mutex);
-		if (data->stop)
+		pthread_mutex_lock(&philo->data->stop_mutex);
+		if (philo->data->stop)
 		{
-			pthread_mutex_unlock(&data->stop_mutex);
-			break ;
+			pthread_mutex_unlock(&philo->data->stop_mutex);
+			break;
 		}
-		pthread_mutex_unlock(&data->stop_mutex);
-		if (data->must_eat != -1)
-		{
-			i = -1;
-			all = true;
-			while (++i < data->philos_num)
-			{
-				if (data->threads[i].counter != data->must_eat)
-				{
-					all = false;
-					break ;
-				}
-			}
-			if (all)
-			{
-				pthread_mutex_lock(&data->print_mutex);
-				printf(SUCCESS_FINISH);
-				pthread_mutex_unlock(&data->print_mutex);
-				pthread_mutex_lock(&data->stop_mutex);
-				data->stop = true;
-				pthread_mutex_unlock(&data->stop_mutex);
-				return (NULL);
-			}
-		}
-		i = -1;
-		while (++i < data->philos_num)
-		{
-			if (get_time_ms() - data->threads[i].last_eat >= data->time_die)
-			{
-				safe_print(data, DIED, data->threads[i].index);
-				pthread_mutex_lock(&data->stop_mutex);
-				data->stop = true;
-				pthread_mutex_unlock(&data->stop_mutex);
-				return (NULL);
-			}
-		}
-		usleep(1000);
+		pthread_mutex_unlock(&philo->data->stop_mutex);
+		ready_for_eating(philo);
+		eat(philo);
+		pthread_mutex_unlock(philo->left);
+		pthread_mutex_unlock(philo->right);
+		safe_print(philo->data, SLEEPING, philo->index);
+		usleep(philo->data->time_sleep * 1000);
+		safe_print(philo->data, THINKING, philo->index);
 	}
 	return (NULL);
 }
 
+void	*check_died(void *arg)
+{
+	t_info	*data;
+
+	data = (t_info *) arg;
+
+	while (get_time_ms() - data->start_time >= data->time_sleep)
+	{
+		
+	}
+}

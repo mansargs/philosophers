@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/06 02:37:24 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/06 14:40:52 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,24 +33,26 @@ typedef struct info
 	long			time_sleep;
 	long			must_eat;
 	long			start_time;
+	t_philo			*philos;
+	pthread_mutex_t	*forks;
+	pthread_t		*monitors;
 	bool			stop;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	print_mutex;
-	t_philo			*threads;
-	pthread_mutex_t	*forks;
 } t_info;
+
 
 struct philo
 {
+	t_info			*data;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
+	pthread_t		tid;
 	int				index;
 	int				counter;
 	long			last_eat;
-	pthread_t		tid;
-	pthread_mutex_t	*left;
-	pthread_mutex_t	*right;
 	pthread_mutex_t	counter_mutex;
 	pthread_mutex_t	last_eat_mutex;
-	t_info			*data;
 };
 
 # define RED     "\033[0;31m"
@@ -75,7 +77,7 @@ void	deallocation_mutexes(t_info *data, int init_count);
 long	get_time_ms(void);
 
 bool	allocation_philos_monitor(t_info *data);
-bool	allocation_mutexes(t_info *data);
+bool	allocation_forks(t_info *data);
 bool	init_simulation_info(const int argc, const char **argv, t_info *data);
 
 long	ft_atol(const char *str);

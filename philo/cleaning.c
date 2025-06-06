@@ -6,27 +6,32 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/04 14:28:01 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/06 14:50:44 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	cleanup_data(t_info *data)
-{
-	if (data->forks)
+	void	cleanup_data(t_info *data)
 	{
-		free (data->forks);
-		data->forks = NULL;
+		if (data->forks)
+		{
+			free (data->forks);
+			data->forks = NULL;
+		}
+		if (data->threads)
+		{
+			free (data->threads);
+			data->threads = NULL;
+		}
+		if (data->monitors)
+		{
+			free (data->monitors);
+			data->monitors = NULL;
+		}
 	}
-	if (data->threads)
-	{
-		free (data->threads);
-		data->threads = NULL;
-	}
-}
 
-void	deallocation_mutexes(t_info *data, int init_count)
+void	deallocation_forks(t_info *data, int init_count)
 {
 	int	j;
 
