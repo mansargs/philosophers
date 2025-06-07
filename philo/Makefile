@@ -5,7 +5,7 @@ NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -I.
 
-SRC = utils.c thread_handlers.c simulation_init.c main.c cleaning.c
+SRC = utils.c thread_handlers.c simulation_init.c main.c cleaning.c creating.c
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

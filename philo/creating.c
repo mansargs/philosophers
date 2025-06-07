@@ -6,13 +6,13 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:47:09 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/06 14:47:04 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/07 13:53:50 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void destroy_internal_mutexes(t_info *data, int up_to)
+void destroy_internal_mutexes(t_info *data, int up_to)
 {
 	int	i;
 
@@ -40,9 +40,9 @@ static bool create_monitor_threads(t_info *data)
 	if (!data->monitors)
 		return (printf(RED"Problem with the allocation memory\n"RESET), false);
 	if (pthread_create(data->monitors, NULL, check_died, data))
-		return (printf(RED"Error creating monitor thread %d\n"RESET), false);
+		return (printf(RED"Error creating monitor thread\n"RESET), false);
 	if (pthread_create(data->monitors + 1, NULL, check_full, data))
-		return (printf(RED"Error creating monitor thread %d\n"RESET), false);
+		return (printf(RED"Error creating monitor thread\n"RESET), false);
 	return (true);
 }
 
@@ -98,7 +98,7 @@ bool allocation_philos_monitor(t_info *data)
 		return (printf(RED"Problem with the allocation memory\n"RESET), false);
 	if (!init_internal_mutexes(data))
 		return (printf(RED"Problem initializing mutexes\n"RESET), false);
-	if (!create_threads(data))
+	if (!create_philos(data))
 		return (destroy_internal_mutexes(data, data->philos_num), false);
 	if (data->philos_num != 1)
 		if (!create_monitor_threads(data))

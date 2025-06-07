@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/06 14:40:52 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/07 15:40:52 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,22 +71,23 @@ struct philo
 # define INVALID_ARGC RED "Usage: ./philo <num> <die> <eat> <sleep> [must_eat]\n" RESET
 # define SUCCESS_FINISH GREEN "Simulation ended: all philosophers have eaten required times.\n" RESET
 
-void	cleanup_data(t_info *data);
-void	deallocation_mutexes(t_info *data, int init_count);
-
-long	get_time_ms(void);
-
-bool	allocation_philos_monitor(t_info *data);
-bool	allocation_forks(t_info *data);
-bool	init_simulation_info(const int argc, const char **argv, t_info *data);
-
 long	ft_atol(const char *str);
+long	get_time_ms(void);
 bool	valid_number(const char *str);
-bool	valid_arguments(const int argc, const char **argv);
+bool	valid_arguments(int argc, const char **argv);
 
-void	*one_philo(void *arg);
-void	*monitor_handler(void	*arg);
-void	safe_print(t_info *data, const char *str, const int index);
-void	*thread_handler(void *arg);
+void		*check_full(void *arg);
+void		*check_died(void *arg);
+void		*thread_handler(void	*arg);
+void		eat(t_philo *philo);
+void		ready_for_eating(t_philo *philo);
+void		*one_philo(void *arg);
+void	cleanup_data(t_info *data);
+
+void destroy_internal_mutexes(t_info *data, int up_to);
+bool allocation_philos_monitor(t_info *data);
+void	deallocation_forks(t_info *data, int init_count);
+bool	init_simulation_info(const int argc, const char **argv, t_info *data);
+void	smart_sleep(long duration_ms);
 
 #endif

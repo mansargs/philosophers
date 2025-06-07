@@ -6,14 +6,18 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/06 15:46:33 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/07 15:42:02 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+
+
 void safe_print(t_info *data, const char *str, const int index)
 {
+	long	time;
+
 	pthread_mutex_lock(&data->stop_mutex);
 	if (data->stop)
 	{
@@ -21,10 +25,15 @@ void safe_print(t_info *data, const char *str, const int index)
 		return;
 	}
 	pthread_mutex_unlock(&data->stop_mutex);
+
+	time = get_time_ms() - data->start_time;
 	pthread_mutex_lock(&data->print_mutex);
-	printf("[%ld] %d %s\n", get_time_ms() - data->start_time, index, str);
+	printf("[%ld] %d %s\n", time, index, str);
 	pthread_mutex_unlock(&data->print_mutex);
 }
+
+
+
 
 void	*one_philo(void *arg)
 {
@@ -37,7 +46,7 @@ void	*one_philo(void *arg)
 	return (NULL);
 }
 
-static void	ready_for_eating(t_philo *philo)
+void	ready_for_eating(t_philo *philo)
 {
 	if (philo->index % 2)
 	{
@@ -55,7 +64,7 @@ static void	ready_for_eating(t_philo *philo)
 	}
 }
 
-static void	eat(t_philo *philo)
+void	eat(t_philo *philo)
 {
 	safe_print(philo->data, EATING, philo->index);
 	pthread_mutex_lock(&philo->last_eat_mutex);
@@ -95,11 +104,82 @@ void	*thread_handler(void	*arg)
 void	*check_died(void *arg)
 {
 	t_info	*data;
+	int		i;
 
 	data = (t_info *) arg;
-
-	while (get_time_ms() - data->start_time >= data->time_sleep)
+	while (1)
 	{
-		
+		pthread_mutex_lock(&data->stop_mutex);
+		if (data->stop)
+		{
+			pthread_mutex_unlock(&data->stop_mutex);
+			break ;
+		}
+		pthread_mutex_unlock(&data->stop_mutex);
+		i = -1;
+		while (++i < data->philos_num)
+		{
+			pthread_mutex_lock(&data->philos[i].last_eat_mutex);
+			if (get_time_ms() - data->philos[i].last_eat > data->time_die)
+			{
+				pthread_mutex_unlock(&data->philos[i].last_eat_mutex);
+				pthread_mutex_lock(&data->stop_mutex);
+				data->stop = true;
+				pthread_mutex_lock(&data->print_mutex);
+				printf("[%ld] %d %s\n", get_time_ms() - data->start_time, i + 1, DIED);
+				pthread_mutex_unlock(&data->print_mutex);
+				pthread_mutex_unlock(&data->stop_mutex);
+				break ;
+			}
+			else
+				pthread_mutex_unlock(&data->philos[i].last_eat_mutex);
+		}
 	}
+	return (NULL);
 }
+
+void	*check_full(void *arg)
+{
+	t_info	*data;
+	int		i;
+	bool	all;
+
+	data = (t_info *) arg;
+	while (1)
+	{
+		pthread_mutex_lock(&data->stop_mutex);
+		if (data->stop)
+		{
+			pthread_mutex_unlock(&data->stop_mutex);
+			break ;
+		}
+		pthread_mutex_unlock(&data->stop_mutex);
+		i = -1;
+		all = true;
+		while (++i < data->philos_num)
+		{
+			pthread_mutex_lock(&data->philos[i].counter_mutex);
+			if (data->must_eat != data->philos[i].counter)
+			{
+				pthread_mutex_unlock(&data->philos[i].counter_mutex);
+				all = false;
+				break ;
+			}
+			else
+				pthread_mutex_unlock(&data->philos[i].counter_mutex);
+		}
+		if (all)
+		{
+			pthread_mutex_lock(&data->stop_mutex);
+			data->stop = true;
+			pthread_mutex_unlock(&data->stop_mutex);
+			pthread_mutex_lock(&data->print_mutex);
+			printf("%s\n", SUCCESS_FINISH);
+			pthread_mutex_unlock(&data->print_mutex);
+			break ;
+		}
+	}
+	return (NULL);
+}
+
+

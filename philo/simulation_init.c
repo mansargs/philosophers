@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/06 14:53:18 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/07 13:47:07 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ bool	allocation_forks(t_info *data)
 	{
 		if (pthread_mutex_init(data->forks + i, NULL))
 		{
-			deallocation_mutexes(data, i);
+			deallocation_forks(data, i);
 			return (printf(RED"Error initializing fork %d\n"RESET, i + 1), false);
 		}
 	}

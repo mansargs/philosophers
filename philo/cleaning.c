@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/06 14:50:44 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/07 13:46:17 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 			free (data->forks);
 			data->forks = NULL;
 		}
-		if (data->threads)
+		if (data->philos)
 		{
-			free (data->threads);
-			data->threads = NULL;
+			free (data->philos);
+			data->philos = NULL;
 		}
 		if (data->monitors)
 		{
