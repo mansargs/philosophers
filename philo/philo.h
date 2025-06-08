@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/07 15:40:52 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/08 22:39:27 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,37 +23,35 @@
 # include <errno.h>
 # include <stdbool.h>
 
+typedef struct timeval t_timeval;
 typedef struct philo t_philo;
 
 typedef struct info
 {
-	long			philos_num;
-	long			time_die;
-	long			time_eat;
-	long			time_sleep;
-	long			must_eat;
-	long			start_time;
-	t_philo			*philos;
-	pthread_mutex_t	*forks;
-	pthread_t		*monitors;
+	int				philos_number;
+	int				time_die;
+	int				time_eat;
+	int				time_sleep;
+	int				must_eat;
 	bool			stop;
+	t_timeval		*start_time;
+	t_philo			*philos;
+	pthread_t		*monitors;
+	pthread_mutex_t	*forks;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	print_mutex;
 } t_info;
 
-
-struct philo
+typedef struct philo
 {
-	t_info			*data;
-	pthread_mutex_t	*left;
-	pthread_mutex_t	*right;
-	pthread_t		tid;
-	int				index;
+	int				number;
 	int				counter;
-	long			last_eat;
+	t_timeval		*last_eat;
+	t_info			*data;
+	pthread_t		tid;
 	pthread_mutex_t	counter_mutex;
 	pthread_mutex_t	last_eat_mutex;
-};
+} t_philo;
 
 # define RED     "\033[0;31m"
 # define GREEN   "\033[0;32m"
@@ -71,10 +69,7 @@ struct philo
 # define INVALID_ARGC RED "Usage: ./philo <num> <die> <eat> <sleep> [must_eat]\n" RESET
 # define SUCCESS_FINISH GREEN "Simulation ended: all philosophers have eaten required times.\n" RESET
 
-long	ft_atol(const char *str);
 long	get_time_ms(void);
-bool	valid_number(const char *str);
-bool	valid_arguments(int argc, const char **argv);
 
 void		*check_full(void *arg);
 void		*check_died(void *arg);

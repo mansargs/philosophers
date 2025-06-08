@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/07 13:47:07 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/08 22:40:53 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static bool convert_argc(const int argc, const char **argv, t_info *data)
 	if (argc == 5)
 		data->must_eat = -1;
 	else
-		data->must_eat = ft_atol(argv[5]);
+		data->must_eat = _atol(argv[5]);
 	if (data->must_eat != -1  && (data->must_eat <= 0 || data->must_eat > INT_MAX))
 		return (false);
 	data->philos_num = ft_atol(argv[1]);
@@ -64,7 +64,7 @@ static bool convert_argc(const int argc, const char **argv, t_info *data)
 bool	init_simulation_info(const int argc, const char **argv, t_info *data)
 {
 	if (!convert_argc(argc, argv, data))
-		return (printf(RED"Invalid arguments: must be numbers in (0, INT_MAX]\n"RESET), false);
+		return (printf(RED"Invalid arguments"RESET), false);
 	if (!allocation_forks(data))
 		return (false);
 	if (!allocation_philos_monitor(data))
