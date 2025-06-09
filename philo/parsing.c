@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:29:05 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/08 22:38:58 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/09 13:52:24 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,17 @@ int	changed_atol(const char *str)
 	if (str[i])
 		return (-1);
 	return (num);
+}
+
+bool convert_argc(const int argc, const char **argv, t_info *data)
+{
+	data->philos_number = changed_atol(argv[1]);
+	data->time_die = changed_atol(argv[2]);
+	data->time_eat = changed_atol(argv[3]);
+	data->time_sleep = changed_atol(argv[4]);
+	data->must_eat = changed_atol(argv[5]);
+	if (data->philos_number > 200 || data->time_die < 60 ||
+		data->time_eat < 60 || data->time_sleep < 60)
+		return (false);
+	return (true);
 }

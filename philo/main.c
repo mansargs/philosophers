@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:55:51 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/08 22:39:47 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/09 14:33:22 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,16 @@ int	main(int argc, char **argv)
 	}
 	memset(&data, '\0', sizeof(t_info));
 	if (!init_simulation_info(argc, (const char **) argv, &data))
-		return (cleanup_data(&data), EXIT_FAILURE);
+		return (clean_main_pointers(&data), EXIT_FAILURE);
 	i = -1;
-	if (data.philos_num != 1)
+	if (data.philos_number != 1)
 	{
 		pthread_join(data.monitors[0], NULL);
-		pthread_join(data.monitors[1], NULL);
+		if (data.must_eat != -1)
+			pthread_join(data.monitors[1], NULL);
 	}
-	while (++i < data.philos_num)
+	while (++i < data.philos_number)
 		pthread_join(data.philos[i].tid, NULL);
-	usleep(5000);
-	deallocation_forks(&data, data.philos_num);
-	destroy_internal_mutexes(&data, data.philos_num);
-	cleanup_data(&data);
+	clean_all(data);
 	return (EXIT_SUCCESS);
 }

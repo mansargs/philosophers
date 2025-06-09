@@ -6,33 +6,11 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:47:09 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/07 13:53:50 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/09 14:05:05 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void destroy_internal_mutexes(t_info *data, int up_to)
-{
-	int	i;
-
-	i= -1;
-	while (++i < up_to)
-	{
-		pthread_mutex_destroy(&data->philos[i].counter_mutex);
-		pthread_mutex_destroy(&data->philos[i].last_eat_mutex);
-	}
-}
-
-static void	private_philo(t_info	*data, int index)
-{
-	data->philos[index].last_eat = get_time_ms();
-	data->philos[index].counter = 0;
-	data->philos[index].index = index + 1;
-	data->philos[index].right = data->forks + index;
-	data->philos[index].left = data->forks + ((index + 1) % data->philos_num);
-	data->philos[index].data = data;
-}
 
 static bool create_monitor_threads(t_info *data)
 {
@@ -59,35 +37,13 @@ static bool create_philos(t_info *data)
 		if (pthread_create(&data->philos[i].tid, NULL, one_philo, &data->philos[i]))
 			return (printf(RED"Error creating thread %d\n"RESET, i + 1), false);
 	}
-	while (++i < data->philos_num)
+	while (++i < data->philos_number)
 	{
 		private_philo(data, i);
 		if (pthread_create(&data->philos[i].tid, NULL, thread_handler, &data->philos[i]))
 			return (printf(RED"Error creating thread %d\n"RESET, i + 1), false);
 	}
 
-	return (true);
-}
-
-static bool init_internal_mutexes(t_info *data)
-{
-	int	i;
-
-	i = -1;
-	while (++i < data->philos_num)
-	{
-		if (pthread_mutex_init(&data->philos[i].counter_mutex, NULL))
-		{
-			destroy_internal_mutexes(data, i);
-			return (false);
-		}
-		if (pthread_mutex_init(&data->philos[i].last_eat_mutex, NULL))
-		{
-			pthread_mutex_destroy(&data->philos[i].counter_mutex);
-			destroy_internal_mutexes(data, i);
-			return (false);
-		}
-	}
 	return (true);
 }
 

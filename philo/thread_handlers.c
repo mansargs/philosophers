@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/07 15:42:02 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/09 14:38:19 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,33 +40,33 @@ void	*one_philo(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
-	printf("[%ld] %d %s\n", get_time_ms() - philo->data->start_time, philo->index, TAKE_FORK);
+	printf("[%ld] %d %s\n", get_time_ms() - philo->data->start_time, philo->number, TAKE_FORK);
 	usleep(philo->data->time_die * 1000);
-	printf("[%ld] %d %s\n", get_time_ms() - philo->data->start_time, philo->index, DIED);
+	printf("[%ld] %d %s\n", get_time_ms() - philo->data->start_time, philo->number, DIED);
 	return (NULL);
 }
 
 void	ready_for_eating(t_philo *philo)
 {
-	if (philo->index % 2)
+	if (philo->number % 2)
 	{
 		pthread_mutex_lock(philo->right);
-		safe_print(philo->data, TAKE_FORK, philo->index);
+		safe_print(philo->data, TAKE_FORK, philo->number);
 		pthread_mutex_lock(philo->left);
-		safe_print(philo->data, TAKE_FORK, philo->index);
+		safe_print(philo->data, TAKE_FORK, philo->number);
 	}
 	else
 	{
 		pthread_mutex_lock(philo->left);
-		safe_print(philo->data, TAKE_FORK, philo->index);
+		safe_print(philo->data, TAKE_FORK, philo->number);
 		pthread_mutex_lock(philo->right);
-		safe_print(philo->data, TAKE_FORK, philo->index);
+		safe_print(philo->data, TAKE_FORK, philo->number);
 	}
 }
 
 void	eat(t_philo *philo)
 {
-	safe_print(philo->data, EATING, philo->index);
+	safe_print(philo->data, EATING, philo->number);
 	pthread_mutex_lock(&philo->last_eat_mutex);
 	philo->last_eat = get_time_ms();
 	pthread_mutex_unlock(&philo->last_eat_mutex);
@@ -94,9 +94,9 @@ void	*thread_handler(void	*arg)
 		eat(philo);
 		pthread_mutex_unlock(philo->left);
 		pthread_mutex_unlock(philo->right);
-		safe_print(philo->data, SLEEPING, philo->index);
+		safe_print(philo->data, SLEEPING, philo->number);
 		usleep(philo->data->time_sleep * 1000);
-		safe_print(philo->data, THINKING, philo->index);
+		safe_print(philo->data, THINKING, philo->number);
 	}
 	return (NULL);
 }
