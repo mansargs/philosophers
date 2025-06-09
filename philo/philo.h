@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/08 22:39:27 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/09 15:12:48 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,18 @@ typedef struct philo
 # define INVALID_ARGC RED "Usage: ./philo <num> <die> <eat> <sleep> [must_eat]\n" RESET
 # define SUCCESS_FINISH GREEN "Simulation ended: all philosophers have eaten required times.\n" RESET
 
-long	get_time_ms(void);
+
+long	timestamp_ms(t_timeval *tv);
+int	current_relative_timestamp_ms(t_info *data);
+
+void	clean_all(t_info *data);
+void	destroy_internal_mutexes(t_info *data, int up_to);
+void	deallocation_forks(t_info *data, int init_count);
+void	clean_main_pointers(t_info *data);
+
+bool	init_simulation_info(const int argc, const char **argv, t_info *data);
+
+
 
 void		*check_full(void *arg);
 void		*check_died(void *arg);

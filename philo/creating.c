@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:47:09 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/09 14:05:05 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/09 15:15:56 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,40 +24,28 @@ static bool create_monitor_threads(t_info *data)
 	return (true);
 }
 
+void	philo
+
 static bool create_philos(t_info *data)
 {
 	int	i;
 
 	i = -1;
-	data->start_time = get_time_ms();
-	if (data->philos_num == 1)
+	timestamp_ms(data->start_time);
+	if (data->philos_number == 1)
 	{
 		++i;
-		private_philo(data, i);
+
 		if (pthread_create(&data->philos[i].tid, NULL, one_philo, &data->philos[i]))
 			return (printf(RED"Error creating thread %d\n"RESET, i + 1), false);
 	}
 	while (++i < data->philos_number)
 	{
-		private_philo(data, i);
+
 		if (pthread_create(&data->philos[i].tid, NULL, thread_handler, &data->philos[i]))
-			return (printf(RED"Error creating thread %d\n"RESET, i + 1), false);
+			return (printf(RED"Error creating thread %d\n"RESET), false);
 	}
 
 	return (true);
 }
 
-bool allocation_philos_monitor(t_info *data)
-{
-	data->philos = (t_philo *)malloc(sizeof(t_philo) * (data->philos_num));
-	if (!data->philos)
-		return (printf(RED"Problem with the allocation memory\n"RESET), false);
-	if (!init_internal_mutexes(data))
-		return (printf(RED"Problem initializing mutexes\n"RESET), false);
-	if (!create_philos(data))
-		return (destroy_internal_mutexes(data, data->philos_num), false);
-	if (data->philos_num != 1)
-		if (!create_monitor_threads(data))
-			return (destroy_internal_mutexes(data, data->philos_num), false);
-	return (true);
-}
