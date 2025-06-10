@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:55:51 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/09 15:11:01 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 02:30:30 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ int	main(int argc, char **argv)
 		return (EINVAL);
 	}
 	memset(&data, '\0', sizeof(t_info));
-	if (!init_simulation_info(argc, (const char **) argv, &data))
+	if (!init_simulation_info((const char **) argv, &data))
 		return (clean_main_pointers(&data), EXIT_FAILURE);
-	if (!create_threads(data))
+	if (!create_threads(&data))
 		return (clean_all(&data), EXIT_FAILURE);
 	i = -1;
 	if (data.philos_number != 1)

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/09 14:18:09 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 02:49:39 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,14 @@ static void	init_philo(t_info *data)
 		data->philos[index].counter = 0;
 		data->philos[index].number = index + 1;
 		data->philos[index].data = data;
+		data->philos[index].left = data->forks + index;
+		data->philos[index].right = data->forks + ((index + 1) % data->philos_number);
 	}
 }
 
-bool	init_simulation_info(const int argc, const char **argv, t_info *data)
+bool	init_simulation_info(const char **argv, t_info *data)
 {
-	if (!convert_argc(argc, argv, data))
+	if (!convert_argc(argv, data))
 		return (printf(RED"Invalid arguments"RESET), false);
 	if (!allocation(data))
 		return (false);

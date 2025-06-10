@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/09 15:12:48 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 02:06:34 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 # include <errno.h>
 # include <stdbool.h>
 
-typedef struct timeval t_timeval;
 typedef struct philo t_philo;
 
 typedef struct info
@@ -34,7 +33,7 @@ typedef struct info
 	int				time_sleep;
 	int				must_eat;
 	bool			stop;
-	t_timeval		*start_time;
+	long			start_time;
 	t_philo			*philos;
 	pthread_t		*monitors;
 	pthread_mutex_t	*forks;
@@ -46,11 +45,13 @@ typedef struct philo
 {
 	int				number;
 	int				counter;
-	t_timeval		*last_eat;
+	long			last_eat;
 	t_info			*data;
 	pthread_t		tid;
 	pthread_mutex_t	counter_mutex;
 	pthread_mutex_t	last_eat_mutex;
+	pthread_mutex_t	*left;
+	pthread_mutex_t	*right;
 } t_philo;
 
 # define RED     "\033[0;31m"
@@ -70,15 +71,16 @@ typedef struct philo
 # define SUCCESS_FINISH GREEN "Simulation ended: all philosophers have eaten required times.\n" RESET
 
 
-long	timestamp_ms(t_timeval *tv);
-int	current_relative_timestamp_ms(t_info *data);
+long	get_time_ms();
+bool convert_argc(const char **argv, t_info *data);
+bool create_threads(t_info *data);
 
 void	clean_all(t_info *data);
 void	destroy_internal_mutexes(t_info *data, int up_to);
 void	deallocation_forks(t_info *data, int init_count);
 void	clean_main_pointers(t_info *data);
 
-bool	init_simulation_info(const int argc, const char **argv, t_info *data);
+bool	init_simulation_info(const char **argv, t_info *data);
 
 
 
@@ -93,7 +95,7 @@ void	cleanup_data(t_info *data);
 void destroy_internal_mutexes(t_info *data, int up_to);
 bool allocation_philos_monitor(t_info *data);
 void	deallocation_forks(t_info *data, int init_count);
-bool	init_simulation_info(const int argc, const char **argv, t_info *data);
+bool	init_simulation_info(const char **argv, t_info *data);
 void	smart_sleep(long duration_ms);
 
 #endif
