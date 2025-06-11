@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:22:01 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 15:17:54 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:55:45 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,17 @@ void	smart_sleep(long time, t_info *data)
 	while (1)
 	{
 		pthread_mutex_lock(&data->stop_mutex);
-		if(data->stop || get_time_ms() - start > time)
+		if (data->stop)
 		{
 			pthread_mutex_unlock(&data->stop_mutex);
-			return ;
+			break;
 		}
 		pthread_mutex_unlock(&data->stop_mutex);
-		usleep(100);
+
+		if (get_time_ms() - start >= time)
+			break;
+
+		usleep(500); // sleep for 0.5 ms to reduce CPU load
 	}
 }
+

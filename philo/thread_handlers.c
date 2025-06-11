@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 16:34:54 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:53:18 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ void	*check_full(void *arg)
 			pthread_mutex_unlock(&data->print_mutex);
 			break ;
 		}
+		usleep(1000);
 	}
 	return (NULL);
 }
