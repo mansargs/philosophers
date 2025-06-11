@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:29:05 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 02:21:46 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:41:05 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int	changed_atol(const char *str)
 		++i;
 	if (str[i] && str[i] == '-')
 		return (-1);
-	else if (str[i] && str[i] == '+')
+	if (str[i] == '+')
 		++i;
-	while (str[i] && str[i] >= '0' && str[i] <= '9')
+	while (str[i] >= '0' && str[i] <= '9')
 	{
 		num = 10 * num + (str[i++] - 48);
 		if (num > INT_MAX)
@@ -45,7 +45,7 @@ bool convert_argc(const char **argv, t_info *data)
 	data->time_eat = changed_atol(argv[3]);
 	data->time_sleep = changed_atol(argv[4]);
 	data->must_eat = changed_atol(argv[5]);
-	if (data->philos_number < 0 || data->philos_number > 200 || data->time_die < 60 ||
+	if (data->philos_number < 0 || data->time_die < 60 ||
 		data->time_eat < 60 || data->time_sleep < 60)
 		return (false);
 	return (true);

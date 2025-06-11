@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 13:17:56 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:34:54 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 void safe_print(t_info *data, const char *str, int index)
 {
-    pthread_mutex_lock(&data->stop_mutex);
-    if (!data->stop) {
-        pthread_mutex_lock(&data->print_mutex);
-        printf("[%ld] %d %s\n", get_time_ms() - data->start_time, index, str);
-        pthread_mutex_unlock(&data->print_mutex);
-    }
-    pthread_mutex_unlock(&data->stop_mutex);
+	pthread_mutex_lock(&data->stop_mutex);
+	if (!data->stop) {
+		pthread_mutex_lock(&data->print_mutex);
+		printf("[%ld] %d %s\n", get_time_ms() - data->start_time, index, str);
+		pthread_mutex_unlock(&data->print_mutex);
+	}
+	pthread_mutex_unlock(&data->stop_mutex);
 }
 
 void	*one_philo(void *arg)
@@ -54,20 +54,14 @@ void	ready_for_eating(t_philo *philo)
 
 void eat(t_philo *philo)
 {
-    pthread_mutex_lock(&philo->last_eat_mutex);
-    philo->last_eat = get_time_ms();
-    pthread_mutex_unlock(&philo->last_eat_mutex);
-
-    safe_print(philo->data, EATING, philo->number);
-
-    // More precise sleeping
-    long start = get_time_ms();
-    while (get_time_ms() - start < philo->data->time_eat)
-        usleep(100);
-
-    pthread_mutex_lock(&philo->counter_mutex);
-    philo->counter++;
-    pthread_mutex_unlock(&philo->counter_mutex);
+	pthread_mutex_lock(&philo->last_eat_mutex);
+	philo->last_eat = get_time_ms();
+	pthread_mutex_unlock(&philo->last_eat_mutex);
+	safe_print(philo->data, EATING, philo->number);
+	smart_sleep(philo->data->time_eat, philo->data);
+	pthread_mutex_lock(&philo->counter_mutex);
+	philo->counter++;
+	pthread_mutex_unlock(&philo->counter_mutex);
 }
 
 void	*thread_handler(void	*arg)
@@ -89,7 +83,7 @@ void	*thread_handler(void	*arg)
 		pthread_mutex_unlock(philo->left);
 		pthread_mutex_unlock(philo->right);
 		safe_print(philo->data, SLEEPING, philo->number);
-		usleep(philo->data->time_sleep * 1000);
+		smart_sleep(philo->data->time_sleep, philo->data);
 		safe_print(philo->data, THINKING, philo->number);
 	}
 	return (NULL);
@@ -97,41 +91,41 @@ void	*thread_handler(void	*arg)
 
 void *check_died(void *arg)
 {
-    t_info *data = (t_info *)arg;
+	t_info *data = (t_info *)arg;
 
-    while (1)
-    {
-        usleep(1000); // Check every 1ms to reduce CPU load
-        pthread_mutex_lock(&data->stop_mutex);
-        if (data->stop) {
-            pthread_mutex_unlock(&data->stop_mutex);
-            break;
-        }
-        pthread_mutex_unlock(&data->stop_mutex);
+	while (1)
+	{
+		usleep(1000); // Check every 1ms to reduce CPU load
+		pthread_mutex_lock(&data->stop_mutex);
+		if (data->stop) {
+			pthread_mutex_unlock(&data->stop_mutex);
+			break;
+		}
+		pthread_mutex_unlock(&data->stop_mutex);
 
-        for (int i = 0; i < data->philos_number; i++)
-        {
-            pthread_mutex_lock(&data->philos[i].last_eat_mutex);
-            long time_since_meal = get_time_ms() - data->philos[i].last_eat;
-            pthread_mutex_unlock(&data->philos[i].last_eat_mutex);
+		for (int i = 0; i < data->philos_number; i++)
+		{
+			pthread_mutex_lock(&data->philos[i].last_eat_mutex);
+			long time_since_meal = get_time_ms() - data->philos[i].last_eat;
+			pthread_mutex_unlock(&data->philos[i].last_eat_mutex);
 
-            if (time_since_meal > data->time_die)
-            {
-                pthread_mutex_lock(&data->stop_mutex);
-                if (!data->stop) // Only print if we're the first to detect
-                {
-                    data->stop = true;
-                    pthread_mutex_lock(&data->print_mutex);
-                    printf("[%ld] %d %s\n", get_time_ms() - data->start_time,
-                           data->philos[i].number, DIED);
-                    pthread_mutex_unlock(&data->print_mutex);
-                }
-                pthread_mutex_unlock(&data->stop_mutex);
-                return NULL;
-            }
-        }
-    }
-    return NULL;
+			if (time_since_meal > data->time_die)
+			{
+				pthread_mutex_lock(&data->stop_mutex);
+				if (!data->stop) // Only print if we're the first to detect
+				{
+					data->stop = true;
+					pthread_mutex_lock(&data->print_mutex);
+					printf("[%ld] %d %s\n", get_time_ms() - data->start_time,
+						   data->philos[i].number, DIED);
+					pthread_mutex_unlock(&data->print_mutex);
+				}
+				pthread_mutex_unlock(&data->stop_mutex);
+				return NULL;
+			}
+		}
+	}
+	return NULL;
 }
 
 void	*check_full(void *arg)

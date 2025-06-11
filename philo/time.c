@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:22:01 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 01:55:48 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:17:54 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,3 +20,20 @@ long	get_time_ms()
 	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
+void	smart_sleep(long time, t_info *data)
+{
+	long	start;
+
+	start = get_time_ms();
+	while (1)
+	{
+		pthread_mutex_lock(&data->stop_mutex);
+		if(data->stop || get_time_ms() - start > time)
+		{
+			pthread_mutex_unlock(&data->stop_mutex);
+			return ;
+		}
+		pthread_mutex_unlock(&data->stop_mutex);
+		usleep(100);
+	}
+}

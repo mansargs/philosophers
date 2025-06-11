@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:47:09 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 13:34:54 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:13:12 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,15 +21,20 @@ static bool init_philosophers(t_info *data)
 	{
 		data->philos[i].last_eat = data->start_time;
 		data->philos[i].counter = 0;
+		data->philos[i].number = i + 1;
+		data->philos[i].data = data;
+		data->philos[i].left = data->forks + i;
+		data->philos[i].right = data->forks + ((i + 1) % data->philos_number);
 	}
 	return (true);
 }
 
 static bool create_monitor_threads(t_info *data)
 {
+	if (!data->monitors)
+		return (true);
 	if (pthread_create(&data->monitors[0], NULL, check_died, data))
 		return (printf(RED"Error creating death monitor thread\n"RESET), false);
-
 	if (data->must_eat > 0)
 	{
 		if (pthread_create(&data->monitors[1], NULL, check_full, data))
@@ -38,39 +43,43 @@ static bool create_monitor_threads(t_info *data)
 	return (true);
 }
 
+static void	print_error_and_activate_flag(t_info *data, int index)
+{
+	pthread_mutex_lock(&data->print_mutex);
+	printf(RED "Error creating philosopher thread %d\n" RESET, index);
+	pthread_mutex_unlock(&data->print_mutex);
+	pthread_mutex_lock(&data->stop_mutex);
+	data->stop = true;
+	pthread_mutex_unlock(&data->stop_mutex);
+	while (--index >= 0)
+		pthread_join(data->philos[index].tid, NULL);
+	pthread_join(data->monitors[0], NULL);
+	if (data->must_eat > 0)
+		pthread_join(data->monitors[1], NULL);
+}
+
 bool create_threads(t_info *data)
 {
-	int i;
+	int	i;
 
-	data->stop = false;
 	data->start_time = get_time_ms();
-
 	if (!init_philosophers(data))
-		return (false);
-
-	if (pthread_mutex_init(&data->print_mutex, NULL))
-		return (printf(RED"Error initializing print mutex\n"RESET), false);
-	if (pthread_mutex_init(&data->stop_mutex, NULL))
-		return (printf(RED"Error initializing stop mutex\n"RESET), false);
-
+		return false;
+	if (!create_monitor_threads(data))
+		return false;
 	if (data->philos_number == 1)
 	{
 		if (pthread_create(&data->philos[0].tid, NULL, one_philo, &data->philos[0]))
-			return (printf(RED"Error creating single philosopher thread\n"RESET), false);
+			return (printf(RED "Error creating philosopher thread\n" RESET), false);
 		return (true);
 	}
 	i = -1;
 	while (++i < data->philos_number)
 	{
 		if (pthread_create(&data->philos[i].tid, NULL, thread_handler, &data->philos[i]))
-			return (printf(RED"Error creating philosopher thread %d\n"RESET, i), false);
+			break;
 	}
-
-	// Small delay to ensure philosophers are ready before monitors start
-	usleep(1000);
-
-	if (!create_monitor_threads(data))
-		return (false);
-
+	if (i < data->philos_number)
+		return (print_error_and_activate_flag(data, i), false);
 	return (true);
 }

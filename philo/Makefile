@@ -3,7 +3,7 @@ MAKEFLAGS += --no-print-directory
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I. -fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -I. #-g -O0 #	-fsanitize=address
 
 SRC = thread_handlers.c simulation_init.c time.c main.c cleaning.c creating.c parsing.c
 OBJ = $(SRC:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 02:06:34 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:23:52 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,6 @@ void destroy_internal_mutexes(t_info *data, int up_to);
 bool allocation_philos_monitor(t_info *data);
 void	deallocation_forks(t_info *data, int init_count);
 bool	init_simulation_info(const char **argv, t_info *data);
-void	smart_sleep(long duration_ms);
+void	smart_sleep(long time, t_info *data);
 
 #endif
