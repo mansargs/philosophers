@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/11 13:57:24 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/13 14:45:29 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@ void	destroy_internal_mutexes(t_info *data, int up_to)
 	int	i;
 
 	if (!data->philos)
-		return;
-	i= -1;
+		return ;
+	i = -1;
 	while (++i < up_to)
 	{
 		pthread_mutex_destroy(&data->philos[i].counter_mutex);

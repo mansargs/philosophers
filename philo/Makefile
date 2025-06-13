@@ -1,28 +1,46 @@
-MAKEFLAGS += --no-print-directory
-
 NAME = philo
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I. #-g -O0 #	-fsanitize=address
+CFLAGS = -Wall -Wextra -Werror -Iinclude
 
-SRC = thread_handlers.c simulation_init.c time.c main.c cleaning.c creating.c parsing.c
-OBJ = $(SRC:.c=.o)
+SRC_DIR = source
+OBJ_DIR = objects
+INC_DIR = include
+
+SRC = $(SRC_DIR)/thread.c \
+      $(SRC_DIR)/simulation_init.c \
+      $(SRC_DIR)/time.c \
+      $(SRC_DIR)/main.c \
+      $(SRC_DIR)/cleaning.c \
+      $(SRC_DIR)/creating.c \
+      $(SRC_DIR)/parsing.c \
+      $(SRC_DIR)/actions.c
+
+OBJ = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+	@echo "🔗 Linking object files..."
+	@$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+	@echo "✅ Build complete: $(NAME)"
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	@echo "🔧 Compiling ..."
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJ)
+	@echo "🧹 Cleaning object files..."
+	@rm -rf $(OBJ_DIR)
 
 fclean: clean
-	rm -f $(NAME)
+	@echo "🧽 Removing binary: $(NAME)..."
+	@rm -f $(NAME)
 
-re: fclean all
+re:
+	@echo "🔄 Rebuilding everything..."
+	@$(MAKE) fclean
+	@$(MAKE) all
 
 .PHONY: all clean fclean re
-
