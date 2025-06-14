@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:22:01 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/13 15:15:55 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/15 01:43:00 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,6 @@ void	smart_sleep(long time, t_info *data)
 		pthread_mutex_unlock(&data->stop_mutex);
 		if (get_time_ms() - start >= time)
 			break ;
-		usleep(500);
+		usleep(100);
 	}
 }

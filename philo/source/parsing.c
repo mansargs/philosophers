@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:29:05 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/13 14:47:41 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/06/15 01:59:33 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ bool	convert_argc(const char **argv, t_info *data)
 	data->time_eat = changed_atol(argv[3]);
 	data->time_sleep = changed_atol(argv[4]);
 	data->must_eat = changed_atol(argv[5]);
-	if (data->philos_number < 0 || data->time_die < 60 || data->time_eat < 60
+	if (data->philos_number < 0 || data->philos_number > 12000
+		|| data->time_die < 60 || data->time_eat < 60
 		|| data->time_sleep < 60 || data->must_eat < -1)
 		return (false);
 	return (true);
