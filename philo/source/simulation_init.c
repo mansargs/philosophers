@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 17:30:47 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/13 15:13:05 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/19 21:20:53 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static bool	initialize_mutexes(t_info *data)
 	return (true);
 }
 
-static bool	allocation(t_info *data)
+static bool	allocation_data(t_info *data)
 {
 	data->forks = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
 			* data->philos_number);
@@ -85,7 +85,7 @@ bool	init_simulation_info(const char **argv, t_info *data)
 {
 	if (!convert_argc(argv, data))
 		return (printf("\033[0;31mInvalid arguments\n\033[0m"), false);
-	if (!allocation(data))
+	if (!allocation_data(data))
 		return (false);
 	return (true);
 }
