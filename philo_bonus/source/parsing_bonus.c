@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:29:05 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/19 21:18:48 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/23 12:56:17 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static int	changed_atol(const char *str)
 	return (sign * num);
 }
 
-bool	convert_argc(const char **argv, t_info *data)
+bool	convert_argc(char **argv, t_info *data)
 {
 	data->philos_number = changed_atol(argv[1]);
 	data->time_die = changed_atol(argv[2]);

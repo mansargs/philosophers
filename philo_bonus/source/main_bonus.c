@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/19 21:10:43 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/23 12:48:02 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,12 @@ static bool	parse_args(int argc, char **argv, t_info *data)
 
 int	main(int argc, char *argv[])
 {
-	t_info	data;
+	t_info	*data;
 
-	if (!parse_args(argc, argv, &data))
+	data = (t_info *)malloc(sizeof(t_info));
+	if (!data)
 		return (EXIT_FAILURE);
-
+	if (!parse_args(argc, argv, data))
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }

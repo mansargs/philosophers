@@ -6,12 +6,12 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/19 21:33:51 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/23 13:05:07 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILO_BONUS
-# define PHILO_BONUS
+#ifndef PHILO_BONUS_H
+# define PHILO_BONUS_H
 
 # include <semaphore.h>
 # include <stdio.h>
@@ -20,32 +20,34 @@
 # include <sys/time.h>
 # include <stdbool.h>
 # include <limits.h>
+# include <fcntl.h>
+# include <string.h>
+# include <unistd.h>
 
-typedef struct	info
+typedef struct philosopher	t_philo;
+
+typedef struct info
 {
-	long			start_time;
-	int				philos_number;
-	int				time_die;
-	int				time_eat;
-	int				time_sleep;
-	int				must_eat;
+	long		start_time;
+	int			philos_number;
+	int			time_die;
+	int			time_eat;
+	int			time_sleep;
+	int			must_eat;
+	sem_t		*forks_sem;
+	sem_t		*print_sem;
+	sem_t		*stop_sem;
+	t_philo		*philos;
+}				t_info;
 
-	sem_t			*forks;
-	sem_t			*print_lock;
-	sem_t			*stop_sem;
-
-	t_philosopher	*philos;
-}					t_info;
-
-typedef struct	philosopher
+typedef struct philosopher
 {
 	pid_t	pid;
 	int		index;
 	long	last_meal;
 	int		meals_eaten;
 	t_info	*data;
-
-}			t_philosopher;
+}			t_philo;
 
 # define TAKE_FORK       "\033[0;36mhas taken a fork\033[0m"
 # define EATING          "\033[0;33mis eating\033[0m"
@@ -57,10 +59,19 @@ typedef struct	philosopher
 # define SUCCESS_FINISH  "\033[0;32mAll philosophers\
 						 have eaten enough!\n\033[0m"
 
+# define STOP_FLAG  1 //(1 << 0)
+# define FORKS_FLAG 2 // (1 << 1)
+# define PRINT_FLAG 4 // (1 << 2)
 
-bool	init_simulation_info(const char **argv, t_info *data);
+bool	init_simulation_info(char **argv, t_info *data);
 
-bool	convert_argc(const char **argv, t_info *data);
+bool	convert_argc(char **argv, t_info *data);
 
+// Time functions
+long	get_time_ms(void);
+void	smart_sleep(long time, t_info *data);
+
+// Cleaning functions
+void	clean_all(t_info *data, unsigned char sem_flag);
 
 #endif
