@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/23 13:05:07 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/23 15:38:03 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,12 @@ typedef struct info
 	int			time_eat;
 	int			time_sleep;
 	int			must_eat;
+
 	sem_t		*forks_sem;
 	sem_t		*print_sem;
 	sem_t		*stop_sem;
+
+	bool		stop;
 	t_philo		*philos;
 }				t_info;
 
@@ -54,10 +57,9 @@ typedef struct philosopher
 # define SLEEPING        "\033[0;34mis sleeping\033[0m"
 # define THINKING        "\033[0;35mis thinking\033[0m"
 # define DIED            "\033[0;31mdied\033[0m"
-# define INVALID_ARGC    "\033[0;31mUsage: ./philo <num> <die> <eat> <sleep>\
-						 [must_eat]\n\033[0m"
-# define SUCCESS_FINISH  "\033[0;32mAll philosophers\
-						 have eaten enough!\n\033[0m"
+# define INVALID_ARGC  	 "\033[0;31mUsage: ./philo <num> <die> <eat> <sleep> \
+[must_eat]\033[0m\n"
+# define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\n\033[0m"
 
 # define STOP_FLAG  1 //(1 << 0)
 # define FORKS_FLAG 2 // (1 << 1)

@@ -27,12 +27,14 @@ OBJ     := $(OBJ_DIR)/cleaning_bonus.o \
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LFLAGS) -o $@
-
+	@echo "🔗 Linking object files..."
+	@$(CC) $(CFLAGS) $(OBJ) $(LFLAGS) -o $@
+	@echo "✅ Build complete: $(NAME)"
 
 $(OBJ_DIR)/%.o: $(SOURCE_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
+	@echo "🔧 Compiling ..."
+	@$(CC) $(CFLAGS) $(IFLAGS) -c $< -o $@
 
 clean:
 	@echo "🧹 Cleaning object files..."

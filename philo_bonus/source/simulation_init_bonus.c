@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 21:08:08 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/23 13:02:53 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/23 15:09:43 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static bool	create_philos(t_info *data)
 		}
 		data->philos[i].index = i + 1;
 		data->philos[i].meals_eaten = 0;
-		data->philos[i].last_meal = get_time_ms();
+		data->philos[i].last_meal = data->start_time;
 		data->philos[i].data = data;
 	}
 	return (true);
@@ -40,17 +40,22 @@ static bool	allocation_data(t_info *data)
 		return (clean_all(data, 0), false);
 	data->print_sem = sem_open("/print_sem", O_CREAT | O_EXCL, 0644, 1);
 	if (data->print_sem == SEM_FAILED)
-		return (printf("033[0;31Semaphore creating failed\033[0m"),
+		return (printf("\033[0;31mSemaphore creating failed\n\033[0m"),
 			clean_all(data, 0), false);
-	data->forks_sem = sem_open("/forks_sem", O_CREAT | O_EXCL, 0644,
-			data->philos_number);
+	if (data->philos_number > 2)
+		data->forks_sem = sem_open("/forks_sem", O_CREAT | O_EXCL, 0644,
+				data->philos_number - 1);
+	else
+		data->forks_sem = sem_open("/forks_sem", O_CREAT | O_EXCL, 0644,
+				data->philos_number);
 	if (data->forks_sem == SEM_FAILED)
-		return (printf("033[0;31Semaphore creating failed\033[0m"),
+		return (printf("\033[0;31mSemaphore creating failed\n\033[0m"),
 			clean_all(data, PRINT_FLAG), false);
 	data->stop_sem = sem_open("/stop_sem", O_CREAT | O_EXCL, 0644, 1);
 	if (data->stop_sem == SEM_FAILED)
-		return (printf("033[0;31Semaphore creating failed\033[0m"),
+		return (printf("\033[0;31mSemaphore creating failed\n\033[0m"),
 			clean_all(data, PRINT_FLAG | FORKS_FLAG), false);
+	data->start_time = get_time_ms();
 	if (!create_philos(data))
 		return (clean_all(data, PRINT_FLAG | STOP_FLAG | FORKS_FLAG), false);
 	return (true);

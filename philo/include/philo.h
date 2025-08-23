@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/13 15:33:06 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/21 19:26:44 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	smart_sleep(long time, t_info *data);
 bool	convert_argc(const char **argv, t_info *data);
 
 // Creation and initialize
-bool	init_simulation_info(const char **argv, t_info *data);
+bool	init_simulation_info(char **argv, t_info *data);
 bool	create_threads(t_info *data);
 
 //cleaning functions
