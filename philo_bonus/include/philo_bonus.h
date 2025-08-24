@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 15:44:24 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/25 03:05:30 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <unistd.h>
 # include <sys/wait.h>
 # include <errno.h>
+# include <signal.h>
 
 typedef struct philosopher	t_philo;
 
@@ -47,13 +48,15 @@ typedef struct info
 
 typedef struct philosopher
 {
-	pid_t	pid;
-	int		index;
-	long	last_meal;
-	int		meals_eaten;
-	sem_t	*last_meal_sem;
-	sem_t	*meals_eaten_sem;
-	t_info	*data;
+	pid_t		pid;
+	int			index;
+	long		last_meal;
+	int			meals_eaten;
+	sem_t		*last_meal_sem;
+	sem_t		*meals_eaten_sem;
+	pthread_t	check_die;
+	pthread_t	check_full;
+	t_info		*data;
 }			t_philo;
 
 # define TAKE_FORK       "\033[0;36mhas taken a fork\033[0m"
@@ -81,6 +84,7 @@ void	smart_sleep(long time, t_info *data);
 
 // Cleaning functions
 bool	clean_all(t_info *data, unsigned char sem_flag);
+bool	unlink_semaphores(unsigned char flag_semaphor, int philos_number);
 
 // Utils
 char	*individual_sem_name(const char *name, int num);
@@ -89,4 +93,8 @@ char	*individual_sem_name(const char *name, int num);
 void	one_philo_case(t_info *data);
 void	all_philos_routine(t_info *data);
 
+void	*check_full(void *arg);
+void	*check_died(void *arg);
+
+void	kill_all_childs(t_info *data);
 #endif

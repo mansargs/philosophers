@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 15:39:14 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/25 02:23:59 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,13 @@ static bool unlink_internal_sem(int philos_number)
 	{
 		name = individual_sem_name("/last_meal_sem", i + 1);
 		if (!name)
-			return (printf("033[0;31mMemory allocation failed\033[0m"), false);
+			return (printf("\033[0;31mMemory allocation failed\033[0m"), false);
 		if (sem_unlink(name) == -1 && errno == ENOENT)
 			return (free(name), true);
 		free(name);
 		name = individual_sem_name("/meals_eaten_sem", i + 1);
 		if (!name)
-			return (printf("033[0;31mMemory allocation failed\033[0m"), false);
+			return (printf("\033[0;31mMemory allocation failed\033[0m"), false);
 		if (sem_unlink(name) == -1 && errno == ENOENT)
 			return (free(name), true);
 		free(name);
@@ -64,7 +64,7 @@ static bool unlink_internal_sem(int philos_number)
 	return (true);
 }
 
-static bool	unlink_semaphores(unsigned char flag_semaphor, int philos_number)
+bool	unlink_semaphores(unsigned char flag_semaphor, int philos_number)
 {
 	if (flag_semaphor & STOP_FLAG)
 		sem_unlink("/stop_sem");

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:24:42 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 15:31:28 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/25 02:41:16 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,22 +27,27 @@ static char	*ft_strjoin(const char *s1, const char *s2)
 	char	*res;
 	size_t	total_len;
 	size_t	i;
-	int		j;
+	size_t	j;
 
 	i = 0;
-	j = -1;
+	j = 0;
 	if (s1 == NULL || s2 == NULL)
 		return (NULL);
 	total_len = ft_strlen(s1) + ft_strlen(s2);
 	res = (char *)malloc((total_len + 1) * sizeof(char));
 	if (res == NULL)
 		return (NULL);
-	while (s1[++j])
-		res[i++] = s1[j];
-	j = -1;
-	while (s2[++j])
-		res[i++] = s2[j];
-	res[i] = '\0';
+	while (s1[i])
+	{
+		res[i] = s1[i];
+		i++;
+	}
+	while (s2[j])
+	{
+		res[i + j] = s2[j];
+		j++;
+	}
+	res[i + j] = '\0';
 	return (res);
 }
 

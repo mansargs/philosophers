@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 15:24:28 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/25 03:06:29 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int	main(int argc, char *argv[])
 	if (!parse_args(argc, argv, data))
 		return (EXIT_FAILURE);
 	run_simulation(data);
+	kill_all_childs(data);
 	if (!clean_all(data, STOP_FLAG | PRINT_FLAG | FORKS_FLAG | INTERNAL_FLAG))
 		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
