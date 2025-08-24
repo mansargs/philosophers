@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 14:01:08 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/24 15:24:28 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,14 +29,17 @@ static void	run_simulation(t_info *data)
 	int	i;
 
 	if (data->must_eat == 0)
-		return (printf(SUCCESS_FINISH), true);
+	{
+		printf(SUCCESS_FINISH);
+		return ;
+	}
 	if (data->philos_number == 1)
 		one_philo_case(data);
 	else
 		all_philos_routine(data);
 	i = -1;
 	while (++i < data->philos_number)
-		waitpid(data->philos[i].pid, NULL, NULL);
+		waitpid(data->philos[i].pid, NULL, 0);
 }
 
 int	main(int argc, char *argv[])
@@ -49,6 +52,7 @@ int	main(int argc, char *argv[])
 	if (!parse_args(argc, argv, data))
 		return (EXIT_FAILURE);
 	run_simulation(data);
-	clean_all(data, STOP_FLAG | PRINT_FLAG | FORKS_FLAG | INTERNAL_SEM);
+	if (!clean_all(data, STOP_FLAG | PRINT_FLAG | FORKS_FLAG | INTERNAL_FLAG))
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

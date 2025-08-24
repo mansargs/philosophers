@@ -6,13 +6,23 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:24:42 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 13:32:55 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/24 15:31:28 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-char	*ft_strjoin(const char *s1, const char *s2)
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+		++i;
+	return (i);
+}
+
+static char	*ft_strjoin(const char *s1, const char *s2)
 {
 	char	*res;
 	size_t	total_len;
@@ -36,7 +46,43 @@ char	*ft_strjoin(const char *s1, const char *s2)
 	return (res);
 }
 
-char	*ft_itoa(int num)
+static size_t	count_char(int num)
+{
+	size_t	len;
+
+	len = 1;
+	if (num < 0)
+		++len;
+	while (num / 10)
+	{
+		num /= 10;
+		++len;
+	}
+	return (len);
+}
+
+static int	minus_case(char *str, int *len, int *num)
+{
+	int	limit;
+
+	limit = 0;
+	if (*num < 0)
+	{
+		*str = '-';
+		limit = 1;
+		if (*num == -2147483648)
+		{
+			*num = (*num + 1) * -1;
+			*(str + --(*len)) = '8';
+			*num /= 10;
+		}
+		else
+			*num *= -1;
+	}
+	return (limit);
+}
+
+static char	*ft_itoa(int num)
 {
 	int		len;
 	char	*str;

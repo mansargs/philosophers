@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 13:57:32 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/24 15:44:24 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <string.h>
 # include <unistd.h>
 # include <sys/wait.h>
+# include <errno.h>
 
 typedef struct philosopher	t_philo;
 
@@ -62,11 +63,12 @@ typedef struct philosopher
 # define DIED            "\033[0;31mdied\033[0m"
 # define INVALID_ARGC  	 "\033[0;31mUsage: ./philo <num> <die> <eat> <sleep> \
 [must_eat]\033[0m\n"
-# define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\n\033[0m"
+# define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\033[0m\n"
 
 # define STOP_FLAG     1 //(1 << 0)
 # define FORKS_FLAG    2 // (1 << 1)
 # define PRINT_FLAG    4 // (1 << 2)
+# define INTERNAL_FLAG 8
 # define NEEDFUL_FORKS 2
 
 bool	init_simulation_info(char **argv, t_info *data);
@@ -78,7 +80,7 @@ long	get_time_ms(void);
 void	smart_sleep(long time, t_info *data);
 
 // Cleaning functions
-void	clean_all(t_info *data, unsigned char sem_flag);
+bool	clean_all(t_info *data, unsigned char sem_flag);
 
 // Utils
 char	*individual_sem_name(const char *name, int num);
