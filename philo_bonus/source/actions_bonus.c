@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 15:00:46 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/23 15:25:17 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/24 13:59:25 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,58 @@ void	one_philo_case(t_info *data)
 			get_time_ms() - data->start_time, data->philos[0].index, DIED);
 		exit(EXIT_SUCCESS);
 	}
+}
+
+static void	eat(t_philo *philo)
+{
+	int	i;
+
+	i = -1;
+	while (++i < NEEDFUL_FORKS)
+	{
+		sem_wait(philo->data->forks_sem);
+		safe_print(philo->data, TAKE_FORK, philo->index);
+	}
+	sem_wait(philo->last_meal_sem);
+	philo->last_meal = get_time_ms();
+	sem_post(philo->last_meal_sem);
+	safe_print(philo->data, EATING, philo->index);
+	smart_sleep(philo->data->time_eat, philo->data);
+	i = -1;
+	while (++i < NEEDFUL_FORKS)
+		sem_post(philo->data->forks_sem);
+	sem_wait(philo->meals_eaten_sem);
+	philo->meals_eaten++;
+	sem_post(philo->meals_eaten_sem);
+}
+
+static void	each_philo_routine(t_philo *philo)
+{
+	if (philo->pid == 0)
+	{
+		while (1)
+		{
+			sem_wait(philo->data->stop_sem);
+			if (philo->data->stop)
+			{
+				sem_post(philo->data->stop_sem);
+				break ;
+			}
+			sem_post(philo->data->stop_sem);
+			eat(philo);
+			safe_print(philo->data, SLEEPING, philo->index);
+			smart_sleep(philo->data->time_sleep, philo->data);
+			safe_print(philo->data, THINKING, philo->index);
+		}
+		exit(EXIT_SUCCESS);
+	}
+}
+
+void	all_philos_routine(t_info *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < data->philos_number)
+		each_philo_routine(data->philos + i);
 }

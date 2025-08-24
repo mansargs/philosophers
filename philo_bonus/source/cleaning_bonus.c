@@ -6,28 +6,33 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/23 13:00:36 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/24 14:09:48 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
+static void close_sem_and_nullify(sem_t **sem_field)
+{
+	sem_close(*sem_field);
+	*sem_field = NULL;
+}
+
 static void	close_semaphores(t_info *data)
 {
+	int	i;
+
 	if (data->stop_sem)
-	{
-		sem_close(data->stop_sem);
-		data->stop_sem = NULL;
-	}
+		close_sem_and_nullify(&data->stop_sem);
 	if (data->forks_sem)
-	{
-		sem_close(data->forks_sem);
-		data->forks_sem = NULL;
-	}
+		close_sem_and_nullify(&data->forks_sem);
 	if (data->print_sem)
+		close_sem_and_nullify(&data->print_sem);
+	i = -1;
+	while (++i < data->philos_number)
 	{
-		sem_close(data->print_sem);
-		data->print_sem = NULL;
+		if (data->philos[i].last_meal_sem)
+			
 	}
 }
 

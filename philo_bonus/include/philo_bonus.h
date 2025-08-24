@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/23 15:38:03 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/24 13:57:32 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 # include <fcntl.h>
 # include <string.h>
 # include <unistd.h>
+# include <sys/wait.h>
 
 typedef struct philosopher	t_philo;
 
@@ -49,6 +50,8 @@ typedef struct philosopher
 	int		index;
 	long	last_meal;
 	int		meals_eaten;
+	sem_t	*last_meal_sem;
+	sem_t	*meals_eaten_sem;
 	t_info	*data;
 }			t_philo;
 
@@ -61,9 +64,10 @@ typedef struct philosopher
 [must_eat]\033[0m\n"
 # define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\n\033[0m"
 
-# define STOP_FLAG  1 //(1 << 0)
-# define FORKS_FLAG 2 // (1 << 1)
-# define PRINT_FLAG 4 // (1 << 2)
+# define STOP_FLAG     1 //(1 << 0)
+# define FORKS_FLAG    2 // (1 << 1)
+# define PRINT_FLAG    4 // (1 << 2)
+# define NEEDFUL_FORKS 2
 
 bool	init_simulation_info(char **argv, t_info *data);
 
@@ -75,5 +79,12 @@ void	smart_sleep(long time, t_info *data);
 
 // Cleaning functions
 void	clean_all(t_info *data, unsigned char sem_flag);
+
+// Utils
+char	*individual_sem_name(const char *name, int num);
+
+//Philos routine
+void	one_philo_case(t_info *data);
+void	all_philos_routine(t_info *data);
 
 #endif
