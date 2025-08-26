@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 15:00:46 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/25 02:35:49 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/26 20:55:52 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,48 +60,38 @@ static void	eat(t_philo *philo)
 	sem_post(philo->meals_eaten_sem);
 }
 
-static void	each_philo_routine(t_philo *philo)
+void	each_philo_routine(t_philo *philo)
 {
-	if (philo->pid == 0)
+
+	if (pthread_create(&philo->check_die, NULL, check_died, philo) != 0)
 	{
-		if (pthread_create(&philo->check_die, NULL, check_died, philo) != 0)
+		printf("\033[0;31mMonitor creating failed\033[0m\n");
+		exit (EXIT_FAILURE);
+	}
+	pthread_detach(philo->check_die);
+	if (philo->data->must_eat != -1)
+	{
+		if (pthread_create(&philo->check_full, NULL, check_full, philo) != 0)
 		{
 			printf("\033[0;31mMonitor creating failed\033[0m\n");
 			exit (EXIT_FAILURE);
 		}
-		pthread_detach(philo->check_die);
-		if (philo->data->must_eat != -1)
-		{
-			if (pthread_create(&philo->check_full, NULL, check_full, philo) != 0)
-			{
-				printf("\033[0;31mMonitor creating failed\033[0m\n");
-				exit (EXIT_FAILURE);
-			}
-			pthread_detach(philo->check_full);
-		}
-		while (1)
-		{
-			sem_wait(philo->data->stop_sem);
-			if (philo->data->stop)
-			{
-				sem_post(philo->data->stop_sem);
-				break ;
-			}
-			sem_post(philo->data->stop_sem);
-			eat(philo);
-			safe_print(philo->data, SLEEPING, philo->index);
-			smart_sleep(philo->data->time_sleep, philo->data);
-			safe_print(philo->data, THINKING, philo->index);
-		}
-		exit(EXIT_SUCCESS);
+		pthread_detach(philo->check_full);
 	}
+	while (1)
+	{
+		sem_wait(philo->data->stop_sem);
+		if (philo->data->stop)
+		{
+			sem_post(philo->data->stop_sem);
+			break ;
+		}
+		sem_post(philo->data->stop_sem);
+		eat(philo);
+		safe_print(philo->data, SLEEPING, philo->index);
+		smart_sleep(philo->data->time_sleep, philo->data);
+		safe_print(philo->data, THINKING, philo->index);
+	}
+	exit(EXIT_SUCCESS);
 }
 
-void	all_philos_routine(t_info *data)
-{
-	int	i;
-
-	i = -1;
-	while (++i < data->philos_number)
-		each_philo_routine(data->philos + i);
-}

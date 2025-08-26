@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 21:08:08 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/26 20:01:44 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/26 20:24:48 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static bool	create_philos(t_info *data)
 	{
 		data->philos[i].index = i + 1;
 		data->philos[i].meals_eaten = 0;
-		// data->philos[i].last_meal = data->start_time;
 		data->philos[i].data = data;
 		if (!create_philos_semaphores(data->philos + i, i + 1))
 			return (clean_all(data), false);
@@ -73,7 +72,6 @@ static bool	allocation_data(t_info *data)
 		|| data->stop_sem == SEM_FAILED || data->is_full == SEM_FAILED
 		|| data->has_died == SEM_FAILED)
 		return (printf("\033[0;31mSemaphore creating failed\033[0m\n"), clean_all(data), false);
-	// data->start_time = get_time_ms();
 	if (!create_philos(data))
 		return (false);
 	return (true);

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:37:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/25 03:18:36 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/26 21:00:36 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ static bool	has_philo_died(t_philo *philo, t_info *data)
 {
 	long	time_since_meal;
 
-	sem_wait(philo->last_meal_sem);
+	sem_wait(philo->avoid_dr);
 	time_since_meal = get_time_ms() - philo->last_meal;
-	sem_post(philo->last_meal_sem);
+	sem_post(philo->avoid_dr);
 	if (time_since_meal > data->time_die)
 	{
 		sem_wait(data->stop_sem);
@@ -50,7 +50,6 @@ void	*check_died(void *arg)
 {
 	t_philo	*philo;
 	t_info	*data;
-	// int		i;
 
 	philo = (t_philo *)arg;
 	data = philo->data;
@@ -110,7 +109,6 @@ void	*check_full(void *arg)
 		{
 			sem_wait(data->stop_sem);
 			data->stop = true;
-			// kill_all_childs(data);
 			sem_post(data->stop_sem);
 			sem_wait(data->print_sem);
 			printf("%s\n", SUCCESS_FINISH);

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/26 19:41:57 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/26 20:32:25 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,4 +94,6 @@ void	*check_full(void *arg);
 void	*check_died(void *arg);
 
 void	kill_all_childs(t_info *data);
+void	each_philo_routine(t_philo *philo);
+
 #endif

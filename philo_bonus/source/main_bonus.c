@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/25 03:06:29 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/26 20:35:11 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,20 +24,44 @@ static bool	parse_args(int argc, char **argv, t_info *data)
 		return (false);
 	return (true);
 }
-static void	run_simulation(t_info *data)
+
+static bool	create_philo_processes(t_info *data)
+{
+	int	i;
+	int	j;
+
+	i = -1;
+	while (++i < data->philos)
+	{
+		data->philos[i].pid = fork ();
+		if (data->philos[i].pid < 0)
+		{
+			j = -1;
+			while (++j < i)
+				kill(data->philos[j].pid, SIGKILL);
+			return (printf("\033[0;31mChild process creating failed\033[0m\n"), false);
+		}
+		if (data->philos[i].pid == 0)
+			each_philo_routine(data->philos + i);
+	}
+	return (true);
+}
+
+static bool	run_simulation(t_info *data)
 {
 	int	i;
 
 	if (data->must_eat == 0)
 	{
 		printf(SUCCESS_FINISH);
-		return ;
+		return (true);
 	}
-	if (data->philos_number == 1)
-		one_philo_case(data);
-	else
-		all_philos_routine(data);
 	i = -1;
+	data->start_time = get_time_ms();
+	while (++i < data->philos_number)
+		data->philos[i].last_meal = data->start_time;
+	if (!create_philo_processes(data))
+		return (clean_all(data), false);
 	while (++i < data->philos_number)
 		waitpid(data->philos[i].pid, NULL, 0);
 }
@@ -51,9 +75,8 @@ int	main(int argc, char *argv[])
 		return (EXIT_FAILURE);
 	if (!parse_args(argc, argv, data))
 		return (EXIT_FAILURE);
-	run_simulation(data);
-	kill_all_childs(data);
-	if (!clean_all(data, STOP_FLAG | PRINT_FLAG | FORKS_FLAG | INTERNAL_FLAG))
+	if (!run_simulation(data))
 		return (EXIT_FAILURE);
+	kill_all_childs(data);
 	return (EXIT_SUCCESS);
 }
