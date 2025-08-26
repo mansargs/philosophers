@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/25 03:05:30 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/26 19:41:57 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct info
 	sem_t		*forks_sem;
 	sem_t		*print_sem;
 	sem_t		*stop_sem;
+	sem_t		*has_died;
+	sem_t		*is_full;
 
 	bool		stop;
 	t_philo		*philos;
@@ -52,8 +54,7 @@ typedef struct philosopher
 	int			index;
 	long		last_meal;
 	int			meals_eaten;
-	sem_t		*last_meal_sem;
-	sem_t		*meals_eaten_sem;
+	sem_t		*avoid_dr;
 	pthread_t	check_die;
 	pthread_t	check_full;
 	t_info		*data;
@@ -68,10 +69,6 @@ typedef struct philosopher
 [must_eat]\033[0m\n"
 # define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\033[0m\n"
 
-# define STOP_FLAG     1 //(1 << 0)
-# define FORKS_FLAG    2 // (1 << 1)
-# define PRINT_FLAG    4 // (1 << 2)
-# define INTERNAL_FLAG 8
 # define NEEDFUL_FORKS 2
 
 bool	init_simulation_info(char **argv, t_info *data);
@@ -83,8 +80,8 @@ long	get_time_ms(void);
 void	smart_sleep(long time, t_info *data);
 
 // Cleaning functions
-bool	clean_all(t_info *data, unsigned char sem_flag);
-bool	unlink_semaphores(unsigned char flag_semaphor, int philos_number);
+bool	clean_all(t_info *data);
+bool	unlink_semaphores(int philos_number);
 
 // Utils
 char	*individual_sem_name(const char *name, int num);
