@@ -6,21 +6,11 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:24:42 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/25 02:41:16 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:39:52 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i])
-		++i;
-	return (i);
-}
 
 static char	*ft_strjoin(const char *s1, const char *s2)
 {

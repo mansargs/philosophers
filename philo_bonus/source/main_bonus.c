@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 15:52:48 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:40:48 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static bool	parse_args(int argc, char **argv, t_info *data)
 	if (argc < 5 || argc > 6)
 	{
 		printf("%s", INVALID_ARGC);
-		return (clean_all(data), false);
+		return (free(data), false);
 	}
 	if (!init_simulation_info(argv, data))
 		return (false);
@@ -39,7 +39,8 @@ static bool	create_philo_processes(t_info *data)
 			j = -1;
 			while (++j < i)
 				kill(data->philos[j].pid, SIGKILL);
-			return (printf("\033[0;31mChild process creating failed\033[0m\n"), false);
+			return (printf("\033[0;31mChild process creating failed\033[0m\n"),
+				false);
 		}
 		if (data->philos[i].pid == 0)
 			each_philo_routine(data->philos + i);
@@ -51,7 +52,6 @@ static bool	run_simulation(t_info *data)
 {
 	int	i;
 	int	status;
-	pid_t	ended;
 
 	if (data->must_eat == 0)
 	{
@@ -64,10 +64,7 @@ static bool	run_simulation(t_info *data)
 		data->philos[i].last_meal = data->start_time;
 	if (!create_philo_processes(data))
 		return (clean_all(data), false);
-	// Wait until either a philosopher dies (semaphore) or any child exits
-	ended = waitpid(-1, &status, 0);
-	(void)ended;
-	sem_post(data->has_died);
+	waitpid(-1, &status, 0);
 	return (true);
 }
 

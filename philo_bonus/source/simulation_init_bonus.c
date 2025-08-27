@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 21:08:08 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 15:22:50 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:42:22 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,12 @@ static bool	allocation_data(t_info *data)
 	if (unlink_name_and_open(&data->print_sem, "/print_sem", 1) == false)
 		return (false);
 	if (data->philos_number > 2
-		&& !unlink_name_and_open(&data->forks_sem, "/forks_sem", data->philos_number - 1))
-			return (false);
-	else if (!unlink_name_and_open(&data->forks_sem, "/forks_sem", data->philos_number))
-			return (false);
+		&& !unlink_name_and_open(&data->forks_sem, "/forks_sem",
+			data->philos_number - 1))
+		return (false);
+	else if (!unlink_name_and_open(&data->forks_sem, "/forks_sem",
+			data->philos_number))
+		return (false);
 	if (unlink_name_and_open(&data->has_died, "/has_died", 0) == false)
 		return (false);
 	if (unlink_name_and_open(&data->is_full, "/is_full", 0) == false)
@@ -75,7 +77,8 @@ static bool	allocation_data(t_info *data)
 bool	init_simulation_info(char **argv, t_info *data)
 {
 	if (!convert_argc(argv, data))
-		return (printf("\033[0;31mInvalid arguments\033[0m\n"), clean_all(data), false);
+		return (printf("\033[0;31mInvalid arguments\033[0m\n"),
+			free(data), false);
 	if (!allocation_data(data))
 		return (clean_all(data), false);
 	return (true);

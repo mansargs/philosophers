@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 15:34:38 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:40:09 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ typedef struct philosopher
 	int			meals_eaten;
 	sem_t		*avoid_dr;
 	pthread_t	check_die;
-	// pthread_t	check_full;
 	t_info		*data;
 }			t_philo;
 
@@ -93,5 +92,6 @@ void	*check_died(void *arg);
 
 void	kill_all_childs(t_info *data);
 void	each_philo_routine(t_philo *philo);
+size_t	ft_strlen(const char *str);
 
 #endif

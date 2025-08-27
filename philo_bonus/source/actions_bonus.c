@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 15:00:46 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 15:34:29 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:38:31 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	safe_print(t_info *data, const char *str, int index)
 	printf("[%ld] %d %s\n", get_time_ms() - data->start_time, index, str);
 	sem_post(data->print_sem);
 }
+
 static void	eat(t_philo *philo)
 {
 	int	i;
@@ -45,7 +46,6 @@ static void	eat(t_philo *philo)
 
 void	each_philo_routine(t_philo *philo)
 {
-
 	if (pthread_create(&philo->check_die, NULL, check_died, philo) != 0)
 	{
 		printf("\033[0;31mMonitor creating failed\033[0m\n");
@@ -61,4 +61,3 @@ void	each_philo_routine(t_philo *philo)
 	}
 	exit(EXIT_SUCCESS);
 }
-

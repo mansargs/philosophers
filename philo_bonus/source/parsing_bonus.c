@@ -6,11 +6,21 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 22:29:05 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/23 12:56:17 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:39:59 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+size_t	ft_strlen(const char *str)
+{
+	size_t	i;
+
+	i = 0;
+	while (str[i])
+		++i;
+	return (i);
+}
 
 static bool	is_invalid_format(const char *str)
 {

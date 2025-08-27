@@ -6,13 +6,13 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 15:08:58 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:38:47 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-static void close_sem_and_nullify(sem_t **sem_field)
+static void	close_sem_and_nullify(sem_t **sem_field)
 {
 	sem_close(*sem_field);
 	*sem_field = NULL;
