@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 16:40:48 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 16:56:09 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static bool	parse_args(int argc, char **argv, t_info *data)
 	memset(data, 0, sizeof(t_info));
 	if (argc < 5 || argc > 6)
 	{
-		printf("%s", INVALID_ARGC);
+		printf("%s %s", INVALID_ARGC, EXPECTED_ARGC);
 		return (free(data), false);
 	}
 	if (!init_simulation_info(argv, data))
