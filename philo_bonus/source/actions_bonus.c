@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 15:00:46 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/26 20:55:52 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 15:34:29 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,10 @@
 
 void	safe_print(t_info *data, const char *str, int index)
 {
-	sem_wait(data->stop_sem);
-	if (!data->stop)
-	{
-		sem_wait(data->print_sem);
-		printf("[%ld] %d %s\n", get_time_ms() - data->start_time, index, str);
-		sem_post(data->print_sem);
-	}
-	sem_post(data->stop_sem);
+	sem_wait(data->print_sem);
+	printf("[%ld] %d %s\n", get_time_ms() - data->start_time, index, str);
+	sem_post(data->print_sem);
 }
-
-void	one_philo_case(t_info *data)
-{
-	if (data->philos[0].pid == 0)
-	{
-		printf("[%ld] %d %s\n", get_time_ms() - data->start_time,
-			data->philos[0].index, TAKE_FORK);
-		usleep(data->time_die * 1000);
-		printf("[%ld] %d %s\n",
-			get_time_ms() - data->start_time, data->philos[0].index, DIED);
-		exit(EXIT_SUCCESS);
-	}
-}
-
 static void	eat(t_philo *philo)
 {
 	int	i;
@@ -47,17 +28,19 @@ static void	eat(t_philo *philo)
 		sem_wait(philo->data->forks_sem);
 		safe_print(philo->data, TAKE_FORK, philo->index);
 	}
-	sem_wait(philo->last_meal_sem);
+	sem_wait(philo->avoid_dr);
 	philo->last_meal = get_time_ms();
-	sem_post(philo->last_meal_sem);
+	sem_post(philo->avoid_dr);
 	safe_print(philo->data, EATING, philo->index);
-	smart_sleep(philo->data->time_eat, philo->data);
+	smart_sleep(philo->data->time_eat);
 	i = -1;
 	while (++i < NEEDFUL_FORKS)
 		sem_post(philo->data->forks_sem);
-	sem_wait(philo->meals_eaten_sem);
+	sem_wait(philo->avoid_dr);
 	philo->meals_eaten++;
-	sem_post(philo->meals_eaten_sem);
+	if (philo->meals_eaten == philo->data->must_eat)
+		sem_post(philo->data->is_full);
+	sem_post(philo->avoid_dr);
 }
 
 void	each_philo_routine(t_philo *philo)
@@ -69,27 +52,11 @@ void	each_philo_routine(t_philo *philo)
 		exit (EXIT_FAILURE);
 	}
 	pthread_detach(philo->check_die);
-	if (philo->data->must_eat != -1)
-	{
-		if (pthread_create(&philo->check_full, NULL, check_full, philo) != 0)
-		{
-			printf("\033[0;31mMonitor creating failed\033[0m\n");
-			exit (EXIT_FAILURE);
-		}
-		pthread_detach(philo->check_full);
-	}
 	while (1)
 	{
-		sem_wait(philo->data->stop_sem);
-		if (philo->data->stop)
-		{
-			sem_post(philo->data->stop_sem);
-			break ;
-		}
-		sem_post(philo->data->stop_sem);
 		eat(philo);
 		safe_print(philo->data, SLEEPING, philo->index);
-		smart_sleep(philo->data->time_sleep, philo->data);
+		smart_sleep(philo->data->time_sleep);
 		safe_print(philo->data, THINKING, philo->index);
 	}
 	exit(EXIT_SUCCESS);

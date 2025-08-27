@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/26 19:40:35 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/27 15:08:58 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ static void	close_semaphores(t_info *data)
 {
 	int	i;
 
-	if (data->stop_sem)
-		close_sem_and_nullify(&data->stop_sem);
 	if (data->forks_sem)
 		close_sem_and_nullify(&data->forks_sem);
 	if (data->print_sem)
@@ -45,11 +43,11 @@ bool	unlink_semaphores(int philos_number)
 	int		i;
 	char	*name;
 
-	sem_unlink("/stop_sem");
 	sem_unlink("/forks_sem");
 	sem_unlink("/print_sem");
 	sem_unlink("/has_died");
 	sem_unlink("/is_full");
+	i = -1;
 	while (++i < philos_number)
 	{
 		name = individual_sem_name("/avoid_dr", i + 1);
