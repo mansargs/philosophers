@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/25 01:37:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 04:27:39 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 13:25:28 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	*check_died(void *arg)
 			sem_post(data->has_died);
 			break ;
 		}
-		usleep(1000);
+		usleep(500);
 	}
 	return (NULL);
 }
@@ -56,9 +56,10 @@ void	*check_full(void *arg)
 	i = -1;
 	while (++i < data->philos_number)
 		sem_wait(data->is_full);
-	usleep(1000);
+	usleep(500);
 	kill_all_childs(data);
 	sem_wait(data->print_sem);
 	printf(SUCCESS_FINISH);
-	return (NULL);
+	clean_all(data, true);
+	exit(EXIT_SUCCESS);
 }

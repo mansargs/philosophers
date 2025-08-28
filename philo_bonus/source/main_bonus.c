@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 03:57:25 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 13:55:59 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,15 @@ static bool	run_simulation(t_info *data)
 		data->philos[i].last_meal = data->start_time;
 	if (!create_philo_processes(data))
 		return (clean_all(data, true), false);
-	if (pthread_create(&data->check_full, NULL, check_full, data) != 0)
+	if (data->must_eat != -1)
 	{
-		printf("\033[0;31mThread creating failed\033[0m\n");
-		return(clean_all(data, true), false);
+		if (pthread_create(&data->check_full, NULL, check_full, data) != 0)
+		{
+			printf("\033[0;31mThread creating failed\033[0m\n");
+			return (clean_all(data, true), false);
+		}
+		pthread_detach(data->check_full);
 	}
-	pthread_detach(data->check_full);
-	// waitpid(-1, NULL, 0);
 	return (true);
 }
 
