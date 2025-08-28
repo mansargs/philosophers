@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 15:00:46 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 16:38:31 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 03:51:41 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	each_philo_routine(t_philo *philo)
 	if (pthread_create(&philo->check_die, NULL, check_died, philo) != 0)
 	{
 		printf("\033[0;31mMonitor creating failed\033[0m\n");
+		clean_all(philo->data, false);
 		exit (EXIT_FAILURE);
 	}
 	pthread_detach(philo->check_die);

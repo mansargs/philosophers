@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 21:08:08 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 16:42:22 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 03:52:34 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static bool	allocation_data(t_info *data)
 {
 	data->philos = (t_philo *)malloc(sizeof (t_philo) * data->philos_number);
 	if (!data->philos)
-		return (clean_all(data), false);
+		return (clean_all(data, true), false);
 	memset(data->philos, 0, sizeof(t_philo) * data->philos_number);
 	if (unlink_name_and_open(&data->print_sem, "/print_sem", 1) == false)
 		return (false);
@@ -80,6 +80,6 @@ bool	init_simulation_info(char **argv, t_info *data)
 		return (printf("\033[0;31mInvalid arguments\033[0m\n"),
 			free(data), false);
 	if (!allocation_data(data))
-		return (clean_all(data), false);
+		return (clean_all(data, true), false);
 	return (true);
 }

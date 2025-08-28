@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 16:56:09 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 03:57:25 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ static bool	create_philo_processes(t_info *data)
 static bool	run_simulation(t_info *data)
 {
 	int	i;
-	int	status;
 
 	if (data->must_eat == 0)
 	{
@@ -63,8 +62,14 @@ static bool	run_simulation(t_info *data)
 	while (++i < data->philos_number)
 		data->philos[i].last_meal = data->start_time;
 	if (!create_philo_processes(data))
-		return (clean_all(data), false);
-	waitpid(-1, &status, 0);
+		return (clean_all(data, true), false);
+	if (pthread_create(&data->check_full, NULL, check_full, data) != 0)
+	{
+		printf("\033[0;31mThread creating failed\033[0m\n");
+		return(clean_all(data, true), false);
+	}
+	pthread_detach(data->check_full);
+	// waitpid(-1, NULL, 0);
 	return (true);
 }
 
@@ -81,5 +86,6 @@ int	main(int argc, char *argv[])
 		return (EXIT_FAILURE);
 	sem_wait(data->has_died);
 	kill_all_childs(data);
+	clean_all(data, true);
 	return (EXIT_SUCCESS);
 }

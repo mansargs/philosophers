@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 16:55:43 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 03:50:40 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct info
 	sem_t		*print_sem;
 	sem_t		*has_died;
 	sem_t		*is_full;
-
+	pthread_t	check_full;
 	t_philo		*philos;
 }				t_info;
 
@@ -65,7 +65,6 @@ typedef struct philosopher
 # define EXPECTED_ARGC   "<num> <die> <eat> <sleep> [must_eat]\033[0m\n"
 # define INVALID_ARGC    "\033[0;31mUsage ./philo"
 # define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\033[0m\n"
-
 # define NEEDFUL_FORKS 2
 
 bool	init_simulation_info(char **argv, t_info *data);
@@ -77,7 +76,7 @@ long	get_time_ms(void);
 void	smart_sleep(long time);
 
 // Cleaning functions
-bool	clean_all(t_info *data);
+bool	clean_all(t_info *data, bool unlink);
 bool	unlink_semaphores(int philos_number);
 
 // Utils
