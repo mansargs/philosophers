@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 14:54:59 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/24 12:56:09 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 19:51:19 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,15 +55,28 @@ void	ready_for_eating(t_philo *philo)
 	}
 }
 
+static void	realese_forks(t_philo *philo)
+{
+	if (philo->number % 2)
+	{
+		pthread_mutex_unlock(philo->right);
+		pthread_mutex_unlock(philo->left);
+	}
+	else
+	{
+		pthread_mutex_unlock(philo->left);
+		pthread_mutex_unlock(philo->right);
+	}
+}
+
 void	eat(t_philo *philo)
 {
+	safe_print(philo->data, EATING, philo->number);
+	smart_sleep(philo->data->time_eat, philo->data);
 	pthread_mutex_lock(&philo->last_eat_mutex);
 	philo->last_eat = get_time_ms();
 	pthread_mutex_unlock(&philo->last_eat_mutex);
-	safe_print(philo->data, EATING, philo->number);
-	smart_sleep(philo->data->time_eat, philo->data);
-	pthread_mutex_unlock(philo->left);
-	pthread_mutex_unlock(philo->right);
+	realese_forks(philo);
 	pthread_mutex_lock(&philo->counter_mutex);
 	philo->counter++;
 	pthread_mutex_unlock(&philo->counter_mutex);

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 03:50:15 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 19:52:04 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ bool	unlink_semaphores(int philos_number)
 			return (printf("\033[0;31mMemory allocation failed\033[0m"), false);
 		sem_unlink(name);
 		free(name);
-		if (errno == ENOENT)
-			break ;
 	}
 	return (true);
 }

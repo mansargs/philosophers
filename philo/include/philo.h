@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/21 19:26:44 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 14:28:28 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,17 +59,16 @@ typedef struct philo
 # define SLEEPING        "\033[0;34mis sleeping\033[0m"
 # define THINKING        "\033[0;35mis thinking\033[0m"
 # define DIED            "\033[0;31mdied\033[0m"
-# define INVALID_ARGC    "\033[0;31mUsage: ./philo <num> <die> <eat> <sleep>\
-						 [must_eat]\n\033[0m"
-# define SUCCESS_FINISH  "\033[0;32mAll philosophers\
-						 have eaten enough!\n\033[0m"
+# define EXPECTED_ARGC   "<num> <die> <eat> <sleep> [must_eat]\033[0m\n"
+# define INVALID_ARGC    "\033[0;31mUsage ./philo"
+# define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\033[0m\n"
 
 // time functions
 long	get_time_ms(void);
 void	smart_sleep(long time, t_info *data);
 
 // read arguments
-bool	convert_argc(const char **argv, t_info *data);
+bool	convert_argc(char **argv, t_info *data);
 
 // Creation and initialize
 bool	init_simulation_info(char **argv, t_info *data);

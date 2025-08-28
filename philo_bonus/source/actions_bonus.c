@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 15:00:46 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 13:19:13 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 19:04:48 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ static void	eat(t_philo *philo)
 		sem_wait(philo->data->forks_sem);
 		safe_print(philo->data, TAKE_FORK, philo->index);
 	}
+	safe_print(philo->data, EATING, philo->index);
 	sem_wait(philo->avoid_dr);
 	philo->last_meal = get_time_ms();
 	sem_post(philo->avoid_dr);
-	safe_print(philo->data, EATING, philo->index);
 	smart_sleep(philo->data->time_eat);
 	i = -1;
 	while (++i < NEEDFUL_FORKS)

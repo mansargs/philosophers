@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:20:26 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/13 15:02:22 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 18:39:35 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	*thread_handler(void	*arg)
 		pthread_mutex_unlock(&philo->data->stop_mutex);
 		ready_for_eating(philo);
 		eat(philo);
-		safe_print(philo->data, SLEEPING, philo->number);
 		smart_sleep(philo->data->time_sleep, philo->data);
+		safe_print(philo->data, SLEEPING, philo->number);
 		safe_print(philo->data, THINKING, philo->number);
 	}
 	return (NULL);
@@ -67,7 +67,6 @@ void	*check_died(void *arg)
 	data = (t_info *)arg;
 	while (1)
 	{
-		usleep(1000);
 		pthread_mutex_lock(&data->stop_mutex);
 		if (data->stop)
 		{
@@ -121,11 +120,10 @@ void	*check_full(void *arg)
 			data->stop = true;
 			pthread_mutex_unlock(&data->stop_mutex);
 			pthread_mutex_lock(&data->print_mutex);
-			printf("%s\n", SUCCESS_FINISH);
+			printf(SUCCESS_FINISH);
 			pthread_mutex_unlock(&data->print_mutex);
 			break ;
 		}
-		usleep(1000);
 	}
 	return (NULL);
 }

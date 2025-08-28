@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:12 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 13:55:59 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 19:17:49 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ static bool	run_simulation(t_info *data)
 	if (data->must_eat == 0)
 	{
 		printf(SUCCESS_FINISH);
-		return (true);
+		clean_all(data, true);
+		exit(EXIT_SUCCESS);
 	}
 	i = -1;
 	data->start_time = get_time_ms();

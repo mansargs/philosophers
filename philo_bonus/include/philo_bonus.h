@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 13:19:08 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/28 19:52:52 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 # include <string.h>
 # include <unistd.h>
 # include <sys/wait.h>
-# include <errno.h>
 # include <signal.h>
 
 typedef struct philosopher	t_philo;
@@ -65,10 +64,9 @@ typedef struct philosopher
 # define EXPECTED_ARGC   "<num> <die> <eat> <sleep> [must_eat]\033[0m\n"
 # define INVALID_ARGC    "\033[0;31mUsage ./philo"
 # define SUCCESS_FINISH "\033[0;32mAll philosophers have eaten enough!\033[0m\n"
-# define NEEDFUL_FORKS 2
+# define NEEDFUL_FORKS   2
 
 bool	init_simulation_info(char **argv, t_info *data);
-
 bool	convert_argc(char **argv, t_info *data);
 
 // Time functions
@@ -83,14 +81,13 @@ bool	unlink_semaphores(int philos_number);
 char	*individual_sem_name(const char *name, int num);
 
 //Philos routine
-void	one_philo_case(t_info *data);
 void	all_philos_routine(t_info *data);
+void	each_philo_routine(t_philo *philo);
 
 void	*check_full(void *arg);
 void	*check_died(void *arg);
 
 void	kill_all_childs(t_info *data);
-void	each_philo_routine(t_philo *philo);
 size_t	ft_strlen(const char *str);
 
 #endif
