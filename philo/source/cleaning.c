@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/06/13 14:45:29 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:30:14 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void	deallocation_forks(t_info *data, int init_count)
 	j = -1;
 	pthread_mutex_destroy(&data->stop_mutex);
 	pthread_mutex_destroy(&data->print_mutex);
+	pthread_mutex_destroy(&data->full_mutex);
 	if (data->forks)
 	{
 		while (++j < init_count)
@@ -55,10 +56,7 @@ void	destroy_internal_mutexes(t_info *data, int up_to)
 		return ;
 	i = -1;
 	while (++i < up_to)
-	{
-		pthread_mutex_destroy(&data->philos[i].counter_mutex);
 		pthread_mutex_destroy(&data->philos[i].last_eat_mutex);
-	}
 }
 
 void	clean_all(t_info *data)

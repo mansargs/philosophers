@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 13:55:51 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 15:44:04 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:29:21 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ static int	run_simulation(t_info *data)
 		return (clean_all(data), EXIT_FAILURE);
 	if (data->philos_number != 1)
 	{
-		pthread_detach(data->monitors[0]);
+		pthread_join(data->monitors[0], NULL);
 		if (data->must_eat != -1)
-			pthread_detach(data->monitors[1]);
+			pthread_join(data->monitors[1], NULL);
 	}
 	i = -1;
 	while (++i < data->philos_number)
@@ -54,6 +54,8 @@ int	main(int argc, char **argv)
 	if (!parse_args(argc, argv, &data))
 		return (clean_main_pointers(&data), EXIT_FAILURE);
 	res = run_simulation(&data);
+	if (res == EXIT_FAILURE)
+		return (EXIT_FAILURE);
 	clean_all(&data);
 	return (res);
 }

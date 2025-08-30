@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 21:13:57 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 14:28:28 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/29 14:09:46 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ typedef struct info
 	int				time_sleep;
 	int				must_eat;
 	bool			stop;
+	int				is_full;
+	pthread_mutex_t	full_mutex;
 	pthread_mutex_t	stop_mutex;
 	pthread_mutex_t	print_mutex;
 }					t_info;
@@ -50,7 +52,6 @@ typedef struct philo
 	int				number;
 	int				counter;
 	pthread_t		tid;
-	pthread_mutex_t	counter_mutex;
 	pthread_mutex_t	last_eat_mutex;
 }					t_philo;
 

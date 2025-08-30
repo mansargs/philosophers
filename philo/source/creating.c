@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 13:47:09 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 19:30:43 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 03:31:35 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,9 +53,9 @@ static void	print_error_and_activate_flag(t_info *data, int index)
 	pthread_mutex_lock(&data->stop_mutex);
 	data->stop = true;
 	pthread_mutex_unlock(&data->stop_mutex);
-	pthread_detach(data->monitors[0]);
+	pthread_join(data->monitors[0], NULL);
 	if (data->must_eat > 0)
-		pthread_detach(data->monitors[1]);
+		pthread_join(data->monitors[1], NULL);
 	while (--index >= 0)
 		pthread_join(data->philos[index].tid, NULL);
 }

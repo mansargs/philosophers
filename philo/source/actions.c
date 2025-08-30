@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 14:54:59 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 19:51:19 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 15:42:00 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,47 +37,51 @@ void	*one_philo(void *arg)
 	return (NULL);
 }
 
-void	ready_for_eating(t_philo *philo)
+void ready_for_eating(t_philo *philo)
 {
-	if (philo->number % 2)
-	{
-		pthread_mutex_lock(philo->right);
-		safe_print(philo->data, TAKE_FORK, philo->number);
-		pthread_mutex_lock(philo->left);
-		safe_print(philo->data, TAKE_FORK, philo->number);
-	}
-	else
-	{
-		pthread_mutex_lock(philo->left);
-		safe_print(philo->data, TAKE_FORK, philo->number);
-		pthread_mutex_lock(philo->right);
-		safe_print(philo->data, TAKE_FORK, philo->number);
-	}
+    pthread_mutex_t *first;
+    pthread_mutex_t *second;
+
+    // Always pick the lower-numbered fork first to prevent deadlock
+    if (philo->number % 2 == 0)
+    {
+        first = philo->left;
+        second = philo->right;
+    }
+    else
+    {
+        first = philo->right;
+        second = philo->left;
+    }
+
+    pthread_mutex_lock(first);
+    safe_print(philo->data, TAKE_FORK, philo->number);
+    pthread_mutex_lock(second);
+    safe_print(philo->data, TAKE_FORK, philo->number);
 }
 
-static void	realese_forks(t_philo *philo)
+
+static void release_forks(t_philo *philo)
 {
-	if (philo->number % 2)
-	{
-		pthread_mutex_unlock(philo->right);
-		pthread_mutex_unlock(philo->left);
-	}
-	else
-	{
-		pthread_mutex_unlock(philo->left);
-		pthread_mutex_unlock(philo->right);
-	}
+    pthread_mutex_unlock(philo->left);
+    pthread_mutex_unlock(philo->right);
 }
+
 
 void	eat(t_philo *philo)
 {
-	safe_print(philo->data, EATING, philo->number);
-	smart_sleep(philo->data->time_eat, philo->data);
+	ready_for_eating(philo);
 	pthread_mutex_lock(&philo->last_eat_mutex);
 	philo->last_eat = get_time_ms();
 	pthread_mutex_unlock(&philo->last_eat_mutex);
-	realese_forks(philo);
-	pthread_mutex_lock(&philo->counter_mutex);
+	safe_print(philo->data, EATING, philo->number);
+	smart_sleep(philo->data->time_eat, philo->data);
+	release_forks(philo);
 	philo->counter++;
-	pthread_mutex_unlock(&philo->counter_mutex);
+	if (philo->counter == philo->data->must_eat)
+	{
+		pthread_mutex_lock(&philo->data->full_mutex);
+		philo->data->is_full++;
+		pthread_mutex_unlock(&philo->data->full_mutex);
+	}
 }
