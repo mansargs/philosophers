@@ -3,7 +3,7 @@ MAKEFLAGS += --no-print-directory
 NAME    := philo_bonus
 
 CC      := cc
-CFLAGS  := -Wall -Wextra -Werror #-fsanitize=address
+CFLAGS  := -Wall -Wextra -Werror
 
 IFLAGS  := -Iinclude
 LFLAGS  := -lpthread

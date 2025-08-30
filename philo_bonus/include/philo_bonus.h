@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 20:28:30 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 19:52:52 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 17:46:38 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct info
 	sem_t		*print_sem;
 	sem_t		*has_died;
 	sem_t		*is_full;
+	sem_t		*secure;
+	
 	pthread_t	check_full;
 	t_philo		*philos;
 }				t_info;

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 14:25:36 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 19:52:04 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 18:11:31 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ bool	unlink_semaphores(int philos_number)
 	sem_unlink("/print_sem");
 	sem_unlink("/has_died");
 	sem_unlink("/is_full");
+	sem_unlink("/secure");
 	i = -1;
 	while (++i < philos_number)
 	{

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 21:08:08 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 03:52:34 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 21:05:17 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,18 +56,15 @@ static bool	allocation_data(t_info *data)
 	if (!data->philos)
 		return (clean_all(data, true), false);
 	memset(data->philos, 0, sizeof(t_philo) * data->philos_number);
-	if (unlink_name_and_open(&data->print_sem, "/print_sem", 1) == false)
+	if (!unlink_name_and_open(&data->print_sem, "/print_sem", 1))
 		return (false);
-	if (data->philos_number > 2
-		&& !unlink_name_and_open(&data->forks_sem, "/forks_sem",
-			data->philos_number - 1))
+	if (!unlink_name_and_open(&data->forks_sem, "/forks_sem", data->philos_number))
 		return (false);
-	else if (!unlink_name_and_open(&data->forks_sem, "/forks_sem",
-			data->philos_number))
+	if (!unlink_name_and_open(&data->secure, "/secure", data->philos_number / 2))
 		return (false);
-	if (unlink_name_and_open(&data->has_died, "/has_died", 0) == false)
+	if (!unlink_name_and_open(&data->has_died, "/has_died", 0))
 		return (false);
-	if (unlink_name_and_open(&data->is_full, "/is_full", 0) == false)
+	if (!unlink_name_and_open(&data->is_full, "/is_full", 0))
 		return (false);
 	if (!init_philos_data(data))
 		return (false);

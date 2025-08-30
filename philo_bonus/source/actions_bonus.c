@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/23 15:00:46 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/28 19:04:48 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 21:06:21 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ static void	eat(t_philo *philo)
 {
 	int	i;
 
+	sem_wait(philo->data->secure);
 	i = -1;
 	while (++i < NEEDFUL_FORKS)
 	{
@@ -37,6 +38,7 @@ static void	eat(t_philo *philo)
 	i = -1;
 	while (++i < NEEDFUL_FORKS)
 		sem_post(philo->data->forks_sem);
+	sem_post(philo->data->secure);
 	sem_wait(philo->avoid_dr);
 	philo->meals_eaten++;
 	if (philo->meals_eaten == philo->data->must_eat)
@@ -59,6 +61,7 @@ void	each_philo_routine(t_philo *philo)
 		safe_print(philo->data, SLEEPING, philo->index);
 		smart_sleep(philo->data->time_sleep);
 		safe_print(philo->data, THINKING, philo->index);
+		usleep(100);
 	}
 	exit(EXIT_SUCCESS);
 }

@@ -6,7 +6,7 @@
 /*   By: mansargs <mansargs@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/24 13:24:42 by mansargs          #+#    #+#             */
-/*   Updated: 2025/08/27 16:39:52 by mansargs         ###   ########.fr       */
+/*   Updated: 2025/08/30 18:11:57 by mansargs         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,3 +112,4 @@ char	*individual_sem_name(const char *name, int num)
 		return (NULL);
 	return (new_name);
 }
+
